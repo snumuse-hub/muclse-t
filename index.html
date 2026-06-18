@@ -1,0 +1,3241 @@
+<!DOCTYPE html>
+<!-- saved from url=(0057)file:///C:/Users/USER/Downloads/pe_dashboard_fixed_4.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>창원예술학교 체육 대시보드</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#f7f1e6;
+  --bg-soft:#fffaf3;
+  --surface:#ffffff;
+  --surface-2:#fff7ef;
+  --line:#efdcc7;
+  --line-strong:#e7c7a6;
+  --text:#2d241f;
+  --muted:#7a6a60;
+  --orange:#f0822d;
+  --orange-deep:#e85f17;
+  --orange-soft:#fff1df;
+  --purple:#6c57c7;
+  --purple-soft:#efeaff;
+  --teal:#1d9e75;
+  --teal-soft:#e8f7f1;
+  --coral:#d96b3b;
+  --coral-soft:#fff0e7;
+  --red:#d64b4b;
+  --red-soft:#fff0f0;
+  --shadow:0 10px 30px rgba(115,85,48,.10);
+  --shadow-soft:0 6px 18px rgba(115,85,48,.08);
+  --radius-xl:24px;
+  --radius-lg:18px;
+  --radius-md:14px;
+  --radius-sm:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:"Pretendard","SUIT","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(255,190,120,.24), transparent 24%),
+    linear-gradient(180deg,#fff8ef 0%, #f7f1e6 40%, #f5efe5 100%);
+  color:var(--text);
+  font-size:14px;
+  line-height:1.5;
+  min-height:100vh;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 18px 40px;}
+.topbar{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:20px;
+  margin-bottom:18px;
+  padding:24px 26px;
+  border-radius:var(--radius-xl);
+  background:linear-gradient(135deg,#fff8ef 0%,#ffffff 52%,#fff5e7 100%);
+  border:1.5px solid var(--line-strong);
+  box-shadow:var(--shadow);
+}
+.topbar h1{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:28px;
+  font-weight:700;
+  letter-spacing:-0.02em;
+  color:#362920;
+  margin-bottom:6px;
+}
+.topbar h1 i{
+  color:var(--orange-deep);
+  background:var(--orange-soft);
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:inset 0 0 0 1px rgba(232,95,23,.14);
+}
+.hero-copy{display:flex;flex-direction:column;gap:4px;}
+.hero-eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  width:max-content;
+  padding:6px 12px;
+  border-radius:999px;
+  background:#fff4df;
+  border:1px solid #ffd3aa;
+  color:#a34c12;
+  font-size:12px;
+  font-weight:600;
+}
+.hero-sub{
+  font-size:14px;
+  color:var(--muted);
+  font-weight:500;
+}
+.reload-btn,.print-btn{
+  padding:11px 16px;
+  font-size:13px;
+  border-radius:12px;
+  border:1px solid rgba(108,87,199,.18);
+  background:#fff;
+  color:var(--purple);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-weight:600;
+  box-shadow:0 4px 12px rgba(108,87,199,.08);
+  transition:.18s ease;
+}
+.reload-btn:hover,.print-btn:hover{
+  background:var(--purple-soft);
+  transform:translateY(-1px);
+}
+.close-btn{
+  font-size:12px;
+  color:var(--muted);
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:10px;
+  cursor:pointer;
+  padding:9px 12px;
+  font-weight:500;
+  transition:.18s ease;
+}
+.close-btn:hover{background:#f9f3ea;}
+.tabs{
+  display:flex;
+  gap:8px;
+  margin-bottom:18px;
+  padding:8px;
+  border-radius:18px;
+  background:rgba(255,255,255,.78);
+  border:1px solid var(--line);
+  box-shadow:var(--shadow-soft);
+  backdrop-filter:blur(8px);
+  overflow-x:auto;
+}
+.tab{
+  padding:10px 18px;
+  font-size:13px;
+  font-weight:600;
+  white-space:nowrap;
+  border-radius:12px;
+  border:1px solid transparent;
+  background:transparent;
+  color:#725d4f;
+  cursor:pointer;
+  transition:.16s ease;
+}
+.tab:hover{background:#fff6ea;color:#5d4637;}
+.tab.active{
+  background:linear-gradient(135deg,var(--orange) 0%, var(--orange-deep) 100%);
+  color:#fff;
+  border-color:transparent;
+  box-shadow:0 8px 18px rgba(232,95,23,.24);
+}
+.metric-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;}
+.metric{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(180deg,#fffdfa 0%, #ffffff 100%);
+  border-radius:20px;
+  padding:18px 18px 16px;
+  border:1px solid var(--line);
+  box-shadow:var(--shadow-soft);
+}
+.metric::before{
+  content:"";
+  position:absolute;
+  inset:0 auto auto 0;
+  width:100%;
+  height:5px;
+  background:linear-gradient(90deg,var(--orange),#ffbc7c);
+}
+.metric:nth-child(2)::before{background:linear-gradient(90deg,var(--teal),#8fd9be);}
+.metric:nth-child(3)::before{background:linear-gradient(90deg,var(--red),#f0a2a2);}
+.metric:nth-child(4)::before{background:linear-gradient(90deg,var(--purple),#b6a6ff);}
+.metric .lbl{font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:500;}
+.metric .val{font-size:30px;font-weight:700;line-height:1.05;letter-spacing:-0.03em;}
+.metric .sub{font-size:12px;color:#a08f84;margin-top:6px;font-weight:500;}
+.class-cards-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px;}
+.class-card{background:linear-gradient(180deg,#121922 0%,#0f1721 100%);border:2px solid #334155;border-radius:16px;padding:20px 18px;position:relative;overflow:hidden;}
+.class-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#fb923c,#f97316);}
+.class-card-title{font-size:15px;font-weight:600;color:#f8fafc;margin-bottom:14px;letter-spacing:-0.01em;}
+.class-card-btns{display:flex;gap:10px;}
+.class-stat-btn{flex:1;background:#1a2535;border:1.5px solid #334155;border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s;}
+.class-stat-btn:hover{border-color:#fb923c;background:#1e2d3d;}
+.class-stat-btn.active{border-color:#fb923c;background:#1e2d3d;}
+.class-stat-btn .stat-label{font-size:11px;color:#94a3b8;font-weight:500;margin-bottom:4px;}
+.class-stat-btn .stat-val{font-size:22px;font-weight:700;line-height:1;}
+.class-stat-btn.submit-btn .stat-val{color:#22c55e;}
+.class-stat-btn.rest-btn .stat-val{color:#fb923c;}
+.class-dropdown{margin-top:10px;padding:10px 12px;background:#0f1721;border:1px solid #263344;border-radius:10px;display:none;}
+.class-dropdown.open{display:block;}
+.class-dropdown-date{font-size:11px;color:#94a3b8;font-weight:500;margin-bottom:3px;margin-top:8px;}
+.class-dropdown-date:first-child{margin-top:0;}
+.class-dropdown-names{font-size:12px;color:#e2e8f0;line-height:1.7;}
+@media(max-width:900px){.class-cards-row{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:600px){.class-cards-row{grid-template-columns:repeat(2,1fr);}}
+.charts-row3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.card,.card-full,.detail-panel{
+  background:linear-gradient(180deg,#fffdfa 0%, #ffffff 100%);
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:18px;
+  box-shadow:var(--shadow-soft);
+}
+.card-full{margin-bottom:14px;}
+.card-title{
+  font-size:15px;
+  font-weight:700;
+  margin-bottom:12px;
+  color:#362920;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  letter-spacing:-0.01em;
+}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:10px;font-size:11px;color:var(--muted);font-weight:500;}
+.legend span{display:flex;align-items:center;gap:5px;}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block;}
+.stu-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.stu-card{
+  background:linear-gradient(180deg,#fffaf4 0%, #ffffff 100%);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:14px 10px;
+  text-align:center;
+  cursor:pointer;
+  transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+  box-shadow:0 3px 10px rgba(90,62,33,.05);
+}
+.stu-card:hover{border-color:#efb17d;transform:translateY(-2px);box-shadow:0 10px 18px rgba(240,130,45,.12);}
+.stu-card.selected{
+  border-color:var(--orange);
+  background:linear-gradient(180deg,#fff2e4 0%, #ffffff 100%);
+  box-shadow:0 12px 22px rgba(240,130,45,.18);
+}
+.stu-name{font-size:15px;font-weight:700;color:#2f241d;word-break:keep-all;}
+.stu-no{font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:500;}
+.stu-cnt{font-size:11px;padding:5px 10px;border-radius:999px;display:inline-block;font-weight:600;}
+.cnt-ok{background:var(--teal-soft);color:#16644d;}
+.cnt-warn{background:#fff4dd;color:#ad6b00;}
+.cnt-no{background:var(--red-soft);color:#b42f2f;}
+.detail-panel{
+  margin-top:16px;
+  display:none;
+  border:1.5px solid #f1d6b8;
+  background:linear-gradient(180deg,#fffaf5 0%, #ffffff 100%);
+}
+.detail-panel.show{display:block;animation:fadeIn .22s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+.detail-header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:16px;
+  padding-bottom:14px;
+  border-bottom:1px dashed #e8ccb0;
+}
+.detail-header h2{
+  font-size:22px;
+  font-weight:700;
+  color:#34281f;
+  letter-spacing:-0.02em;
+}
+.timeline{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.tl-item{
+  flex:1;
+  min-width:120px;
+  border-radius:16px;
+  padding:12px 14px;
+  border:1px solid #e6d8ca;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55);
+}
+.tl-ok{background:linear-gradient(180deg,#effaf3 0%, #ffffff 100%);border-color:#b5dec4;}
+.tl-no{background:linear-gradient(180deg,#fff1f1 0%, #ffffff 100%);border-color:#efbbbb;}
+.tl-nth{font-size:13px;font-weight:700;margin-bottom:4px;}
+.tl-ok .tl-nth{color:#25724f;}
+.tl-no .tl-nth{color:#c93d3d;}
+.tl-date{font-size:11px;font-weight:500;}
+.tl-ok .tl-date{color:#4a8a6b;}
+.tl-no .tl-date{color:#d45e5e;}
+.tl-icon{font-size:16px;float:right;margin-top:-1px;}
+.loading,.error{
+  text-align:center;
+  padding:64px 24px;
+  color:var(--muted);
+  font-size:14px;
+  background:linear-gradient(180deg,#fffaf4 0%, #ffffff 100%);
+  border:1px solid var(--line);
+  border-radius:22px;
+  box-shadow:var(--shadow-soft);
+}
+.error{color:#b53838;}
+/* 종목별 누적 카드 */
+.ex-cards{display:flex;flex-direction:column;gap:16px;margin-top:4px;}
+.ex-card{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 4px 14px rgba(84,63,37,.06);}
+.ex-card-head{display:flex;align-items:center;gap:10px;padding:12px 16px;background:linear-gradient(90deg,#fff7ed 0%, #fffdf9 100%);border-bottom:1px solid #f1e1d0;}
+.ex-card-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;}
+.badge-cardio{background:var(--teal-soft);color:#0f6e56;}
+.badge-upper{background:var(--purple-soft);color:#3C3489;}
+.badge-lower{background:var(--coral-soft);color:#8a3c1d;}
+.ex-card-name{font-size:15px;font-weight:700;color:#1a1a1a;word-break:break-word;}
+.ex-card-body{padding:14px 16px;}
+.ex-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px;overflow:hidden;border-radius:12px;}
+.ex-table th{background:#f8f1e8;color:#66574d;font-weight:600;padding:8px 8px;text-align:center;border-bottom:1px solid #ead9c7;}
+.ex-table td{padding:7px 8px;text-align:center;border-bottom:1px solid #f3eadf;color:#3d322b;}
+.ex-table tr:last-child td{border-bottom:none;}
+.ex-chart-wrap{position:relative;height:168px;margin-bottom:12px;padding:8px;border-radius:14px;background:#fffaf5;border:1px solid #f1e2d2;}
+.ex-feels{display:flex;flex-direction:column;gap:6px;}
+.ex-feel-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;}
+.ex-feel-nth{color:#8a7a6f;min-width:42px;font-weight:600;}
+.ex-feel-text{color:#5a438c;background:#f2ecff;padding:5px 10px;border-radius:999px;line-height:1.45;display:inline-block;}
+canvas{user-select:none;}
+@media (max-width:1080px){
+  .metric-row{grid-template-columns:repeat(2,1fr);}
+  .charts-row3{grid-template-columns:1fr;}
+  .stu-grid{grid-template-columns:repeat(4,1fr);}
+}
+@media (max-width:720px){
+  body{font-size:13px;}
+  .wrap{padding:18px 12px 28px;}
+  .topbar{flex-direction:column;align-items:flex-start;padding:18px 16px;}
+  .topbar h1{font-size:22px;}
+  .hero-sub{font-size:12px;}
+  .tabs{padding:6px;gap:6px;}
+  .tab{padding:9px 14px;font-size:12px;}
+  .metric-row{grid-template-columns:1fr 1fr;gap:10px;}
+  .metric{padding:15px 14px;}
+  .metric .val{font-size:24px;}
+  .stu-grid{grid-template-columns:repeat(2,1fr);}
+  .detail-header{flex-direction:column;align-items:flex-start;}
+  .detail-header h2{font-size:18px;}
+  .timeline{gap:8px;}
+  .tl-item{min-width:calc(50% - 4px);}
+  .card,.card-full,.detail-panel{padding:14px; border-radius:18px;}
+  .card-title{font-size:14px;}
+  .ex-card-head{align-items:flex-start;}
+  .ex-card-name{font-size:14px;}
+  .ex-chart-wrap{height:152px;}
+}
+@media (max-width:480px){
+  .metric-row{grid-template-columns:1fr;}
+  .stu-grid{grid-template-columns:1fr 1fr;}
+  .tl-item{min-width:100%;}
+}
+@media print{
+  body{background:#fff !important;}
+  .topbar,.tabs,.reload-btn,.print-btn,.close-btn{box-shadow:none !important;}
+}
+</style>
+
+
+
+
+
+<style id="dashboard-dark-rest-roster-final-v4">
+:root{--dark-bg:#060b12;--dark-card:#121922;--dark-line:#263344;--dark-text:#f8fafc;--dark-muted:#94a3b8;--accent:#fb923c;--accent2:#f97316;--teal2:#10b981;--lime:#84cc16;}
+html,body{background:radial-gradient(circle at 18% 0%,rgba(132,255,31,.08),transparent 18%),linear-gradient(180deg,#080d14 0%,#050911 54%,#03060b 100%)!important;color:var(--dark-text)!important;}
+.wrap{max-width:1220px!important;background:transparent!important;}
+.topbar{background:linear-gradient(180deg,#111923 0%,#0c121a 100%)!important;border:1px solid #253244!important;border-top:3px solid rgba(132,255,31,.28)!important;box-shadow:0 18px 38px rgba(0,0,0,.34)!important;}
+.topbar h1,.card-title,.detail-header h2,.metric .val{color:#f8fafc!important}.hero-eyebrow{background:#172032!important;border-color:#31435a!important;color:#fed7aa!important}.hero-sub,.metric .lbl,.metric .sub,.legend,.stu-no,.detail-subtitle{color:#94a3b8!important}.reload-btn,.print-btn,.close-btn{background:#111827!important;border-color:#334155!important;color:#d7ccff!important;box-shadow:0 6px 16px rgba(0,0,0,.22)!important}.tabs{background:#0f1722!important;border-color:#263344!important;box-shadow:0 12px 24px rgba(0,0,0,.26)!important}.tab{background:transparent!important;color:#aab4c3!important}.tab:hover{background:#172032!important;color:#fff!important}.tab.active{background:linear-gradient(135deg,#fb923c,#f97316)!important;color:#fff!important;box-shadow:0 10px 20px rgba(249,115,22,.28)!important}.metric-row{grid-template-columns:repeat(3,1fr)!important}.metric,.card,.card-full,.detail-panel,.stu-card{background:linear-gradient(180deg,#121922 0%,#0f1721 100%)!important;border-color:#263344!important;box-shadow:0 12px 26px rgba(0,0,0,.28)!important}.metric::before{background:linear-gradient(90deg,#84cc16,#bef264)!important}.metric:nth-child(2)::before{background:linear-gradient(90deg,#10b981,#5eead4)!important}.metric:nth-child(3)::before{background:linear-gradient(90deg,#ef4444,#fca5a5)!important}.metric .val.metric-green{color:#22c55e!important}.metric .val.metric-red{color:#f87171!important}
+.dashboard-three-charts{display:grid!important;grid-template-columns:1fr 1.18fr 1.18fr!important;gap:14px!important;align-items:stretch!important}.date-card{overflow:hidden!important}.scroll-guide{color:#fed7aa!important;background:#1b2533!important;border:1px solid #334155!important;border-radius:999px;padding:3px 9px;font-size:10.5px}.date-chart-scroll{width:100%;overflow-x:auto;overflow-y:hidden;padding:4px 2px 10px;scroll-snap-type:x proximity}.date-chart-scroll::-webkit-scrollbar{height:8px}.date-chart-scroll::-webkit-scrollbar-thumb{background:#fb923c;border-radius:999px}.date-chart-scroll::-webkit-scrollbar-track{background:#182231;border-radius:999px}.date-chart-inner{position:relative;height:190px;min-width:420px;border:1px solid #263344;border-radius:16px;background:#0b1119;padding:10px}.empty-date-chart,.exercise-log-guide,.empty-selected-chart{min-height:74px;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:13px;font-weight:600;background:#0b1119;border:1px dashed #334155;border-radius:18px;padding:18px;text-align:center}
+.roster-panel{margin-top:10px;border:1px solid #263344;background:#0b1119;border-radius:16px;padding:12px;color:#94a3b8;font-size:12px;font-weight:600;line-height:1.5}.roster-title{display:flex;justify-content:space-between;gap:10px;align-items:center;color:#f8fafc;font-size:13px;font-weight:700;margin-bottom:8px}.roster-title span{color:#86efac;background:#063f32;border-radius:999px;padding:3px 8px;font-size:11px}.roster-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:7px}.roster-item{display:flex;justify-content:space-between;gap:8px;align-items:center;background:#111827;border:1px solid #253244;border-radius:12px;padding:8px 10px;color:#e5e7eb}.roster-item b{font-size:11px;color:#fed7aa;white-space:nowrap}.roster-empty{color:#94a3b8;text-align:center;padding:10px}
+.stu-card:hover{border-color:#fb923c!important;box-shadow:0 12px 22px rgba(249,115,22,.16)!important}.stu-card.selected{background:#182230!important;border-color:#fb923c!important;box-shadow:0 14px 26px rgba(249,115,22,.18)!important}.stu-name{color:#f8fafc!important}.cnt-ok{background:#063f32!important;color:#5eead4!important}.cnt-warn{background:#3b2c07!important;color:#fde68a!important}.cnt-no{background:#3b1111!important;color:#fca5a5!important}.detail-panel{border-color:#2e3d52!important}.detail-header{border-bottom-color:#334155!important}.detail-subtitle{font-size:14px;font-weight:700;margin-bottom:10px}.detail-subtitle.with-space{margin-top:16px}.date-summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.date-summary-card{border:1px solid #2c3b4f;border-radius:20px;background:linear-gradient(180deg,#141d28 0%,#101821 100%);padding:14px;box-shadow:0 10px 22px rgba(0,0,0,.25)}.date-summary-date{display:inline-flex;align-items:center;justify-content:center;min-width:56px;padding:6px 12px;border-radius:999px;background:linear-gradient(135deg,#fb923c,#f97316);color:#fff;font-size:13px;font-weight:700;margin-bottom:8px}.date-summary-total{font-size:12px;font-weight:600;color:#cbd5e1;margin-bottom:8px}.date-summary-parts{display:grid;grid-template-columns:1fr 1fr;gap:7px}.part-pill{display:flex;align-items:center;justify-content:space-between;gap:6px;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:700}.part-pill.cardio{background:#063f32;color:#5eead4}.part-pill.upper{background:#251d50;color:#c4b5fd}.part-pill.core{background:#3b2f09;color:#fde68a}.part-pill.lower{background:#3c1f14;color:#fdba74}.date-summary-click-title{margin:12px 0 7px;color:#94a3b8;font-size:11px;font-weight:600}.date-exercise-list{display:flex;flex-wrap:wrap;gap:7px}.date-exercise-chip{border:1px solid #334155;background:#0b1119;color:#e5e7eb;border-radius:999px;padding:7px 10px;font-size:11.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;max-width:100%}.date-exercise-chip span{color:#94a3b8;font-size:10px}.date-exercise-chip b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px}.date-exercise-chip.cardio.active,.date-exercise-chip.cardio:hover{border-color:#10b981;background:#063f32;color:#a7f3d0}.date-exercise-chip.upper.active,.date-exercise-chip.upper:hover{border-color:#8b5cf6;background:#251d50;color:#ddd6fe}.date-exercise-chip.core.active,.date-exercise-chip.core:hover{border-color:#facc15;background:#3b2f09;color:#fef3c7}.date-exercise-chip.lower.active,.date-exercise-chip.lower:hover{border-color:#fb923c;background:#3c1f14;color:#fed7aa}.date-exercise-empty,.date-summary-empty{border:1px dashed #334155;background:#0b1119;color:#94a3b8;border-radius:16px;padding:13px;font-size:13px;font-weight:600;text-align:center}.ex-card{border-color:#2c3b4f!important;background:#101821!important}.ex-card-head{background:#0b1119!important;border-bottom-color:#263344!important}.ex-card-name{color:#f8fafc!important}.ex-card-body{background:#101821!important}.ex-table th{background:#182231!important;color:#cbd5e1!important;border-bottom-color:#334155!important}.ex-table td{color:#e5e7eb!important;border-bottom-color:#243142!important}.ex-chart-wrap{background:#0b1119!important;border-color:#263344!important;height:220px!important}.ex-feel-text{background:#182231!important;color:#e5e7eb!important}.ex-feel-nth{color:#fb923c!important}.ex-feel-item.selected-date .ex-feel-text{border:1px solid #fb923c}.badge-cardio{background:#063f32!important;color:#5eead4!important}.badge-upper{background:#251d50!important;color:#c4b5fd!important}.badge-core{background:#3b2f09!important;color:#fde68a!important}.badge-lower{background:#3c1f14!important;color:#fdba74!important}.selected-date-label{margin-left:auto;font-size:11px;font-weight:700;color:#fed7aa;background:#2a1b10;border:1px solid #7c3f14;border-radius:999px;padding:4px 9px}.collapse-ex-btn{border:1px solid #334155;background:#111827;color:#cbd5e1;border-radius:999px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer}.selected-guide{margin-bottom:10px;color:#94a3b8;font-size:12px;font-weight:500}.selected-feel-title{color:#e5e7eb;font-size:13px;font-weight:700;margin-bottom:8px}.selected-feel-title.muted{color:#94a3b8}
+@media(max-width:1180px){.dashboard-three-charts{grid-template-columns:1fr!important}}@media(max-width:720px){.metric-row{grid-template-columns:1fr!important}.date-chart-inner{height:180px;min-width:420px}.date-summary-grid{grid-template-columns:1fr}.date-summary-parts{grid-template-columns:1fr 1fr}.selected-date-label{margin-left:0}.ex-card-head{flex-wrap:wrap}}
+</style>
+
+
+<style id="teacher-dashboard-toprank-badges-v57">
+.detail-title-wrap{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  min-width:0;
+}
+.detail-rank-badges{
+  min-height:24px;
+}
+.rank-title{
+  color:#cbd5e1;
+  font-size:12px;
+  font-weight:700;
+  margin-bottom:7px;
+}
+.rank-badge-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  align-items:center;
+}
+.rank-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border-radius:999px;
+  padding:7px 10px;
+  border:1px solid #334155;
+  background:#0b1119;
+  color:#e5e7eb;
+  font-size:12px;
+  font-weight:700;
+  line-height:1;
+  max-width:100%;
+}
+.rank-badge b{
+  max-width:170px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.rank-badge em{
+  font-style:normal;
+  color:#f8fafc;
+  font-size:11px;
+}
+.rank-badge.rank-1{
+  background:#3b2f09;
+  border-color:#facc15;
+  color:#fef3c7;
+}
+.rank-badge.rank-2{
+  background:#242b36;
+  border-color:#94a3b8;
+  color:#e2e8f0;
+}
+.rank-badge.rank-3{
+  background:#3c1f14;
+  border-color:#fb923c;
+  color:#fed7aa;
+}
+.rank-empty{
+  color:#64748b;
+  font-size:12px;
+  font-weight:600;
+  background:#0b1119;
+  border:1px dashed #334155;
+  border-radius:999px;
+  display:inline-flex;
+  padding:7px 10px;
+}
+@media(max-width:720px){
+  .detail-header{align-items:flex-start !important;}
+  .rank-badge-row{flex-direction:column;align-items:flex-start;}
+  .rank-badge b{max-width:220px;}
+}
+</style>
+
+
+<style id="teacher-dashboard-v58-name-rank-fix">
+.detail-rank-badges{
+  display:block !important;
+  width:100%;
+  margin-top:4px;
+  padding-top:2px;
+}
+.rank-title{
+  display:block !important;
+  color:#dbeafe !important;
+}
+.rank-badge-row{
+  display:flex !important;
+}
+.stu-name{
+  letter-spacing:-0.02em;
+}
+</style>
+
+
+<style id="teacher-dashboard-v60-latest-fix">
+.stu-latest{
+  margin-top:4px;
+  font-size:11px;
+  color:#93a4bd;
+  min-height:14px;
+}
+</style>
+
+
+<style id="teacher-dashboard-v61-detail-rank-display">
+.detail-title-wrap{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  gap:8px !important;
+}
+#detailRankBadges.detail-rank-badges{
+  display:block !important;
+  width:100% !important;
+  min-height:34px !important;
+  margin-top:2px !important;
+  margin-bottom:4px !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
+.detail-rank-box{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid #2c3f5c;
+  background:linear-gradient(135deg, rgba(15,23,42,.92), rgba(11,17,25,.92));
+}
+.detail-rank-title{
+  color:#e2e8f0;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:-0.02em;
+}
+.detail-rank-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.detail-rank-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:8px 11px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+  border:1px solid #334155;
+  background:#0b1119;
+  color:#e5e7eb;
+  line-height:1;
+}
+.detail-rank-chip .rank-medal{
+  font-size:15px;
+}
+.detail-rank-chip .rank-ex{
+  max-width:190px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.detail-rank-chip .rank-pos{
+  color:#f8fafc;
+}
+.detail-rank-chip .rank-total{
+  color:#93c5fd;
+  font-size:11px;
+}
+.detail-rank-chip.rank-1{
+  background:rgba(120,83,8,.42);
+  border-color:#facc15;
+  color:#fef3c7;
+}
+.detail-rank-chip.rank-2{
+  background:rgba(51,65,85,.55);
+  border-color:#cbd5e1;
+  color:#f8fafc;
+}
+.detail-rank-chip.rank-3{
+  background:rgba(124,45,18,.42);
+  border-color:#fb923c;
+  color:#fed7aa;
+}
+.detail-rank-empty{
+  display:inline-flex;
+  padding:8px 11px;
+  border-radius:999px;
+  border:1px dashed #334155;
+  color:#94a3b8;
+  background:#0b1119;
+  font-size:12px;
+  font-weight:600;
+}
+</style>
+
+
+<style id="teacher-dashboard-v62-card-and-detail-rank">
+.stu-ranks{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:4px;
+  margin:6px 0 2px;
+  min-height:18px;
+}
+.stu-rank-mini{
+  display:inline-flex;
+  align-items:center;
+  gap:3px;
+  padding:4px 7px;
+  border-radius:999px;
+  border:1px solid #475569;
+  background:#0b1119;
+  color:#e5e7eb;
+  font-size:10px;
+  font-weight:700;
+  line-height:1;
+}
+.stu-rank-mini.rank-1{border-color:#facc15;background:rgba(120,83,8,.48);color:#fef3c7;}
+.stu-rank-mini.rank-2{border-color:#cbd5e1;background:rgba(51,65,85,.58);color:#f8fafc;}
+.stu-rank-mini.rank-3{border-color:#fb923c;background:rgba(124,45,18,.48);color:#fed7aa;}
+
+#detailRankBadges{
+  display:block !important;
+  width:100% !important;
+  min-height:46px !important;
+  margin-top:10px !important;
+  margin-bottom:10px !important;
+}
+.detail-rank-box.v62{
+  width:100%;
+  display:block;
+  padding:12px 14px;
+  border-radius:16px;
+  border:1px solid #355275;
+  background:linear-gradient(135deg, rgba(13,23,38,.98), rgba(9,14,23,.98));
+  box-shadow:0 10px 28px rgba(0,0,0,.18);
+}
+.detail-rank-title.v62{
+  color:#f8fafc;
+  font-size:14px;
+  font-weight:700;
+  margin-bottom:10px;
+}
+.detail-rank-list.v62{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.detail-rank-chip.v62{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:9px 12px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:700;
+  border:1px solid #334155;
+  background:#0b1119;
+  color:#e5e7eb;
+  line-height:1;
+}
+.detail-rank-chip.v62.rank-1{background:rgba(120,83,8,.48);border-color:#facc15;color:#fef3c7;}
+.detail-rank-chip.v62.rank-2{background:rgba(51,65,85,.58);border-color:#cbd5e1;color:#f8fafc;}
+.detail-rank-chip.v62.rank-3{background:rgba(124,45,18,.48);border-color:#fb923c;color:#fed7aa;}
+.detail-rank-empty.v62{
+  display:inline-flex;
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px dashed #475569;
+  color:#cbd5e1;
+  background:#0b1119;
+  font-size:12px;
+  font-weight:700;
+}
+</style>
+
+
+<style id="teacher-dashboard-v63-hide-card-rank-show-detail">
+/* 학생 목록 카드 안 전교등수 배지는 표시하지 않음 */
+.stu-ranks,
+.stu-rank-mini{
+  display:none !important;
+}
+
+/* 학생 상세 제목 바로 아래 TOP3 줄 */
+#detailRankBadges{
+  display:block !important;
+  width:100% !important;
+  min-height:28px !important;
+  margin:8px 0 12px 0 !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
+.detail-top-rank-linebox{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  gap:6px !important;
+  width:100% !important;
+}
+.detail-top-rank-line{
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:7px !important;
+  color:#f8fafc !important;
+  background:rgba(15,23,42,.72) !important;
+  border:1px solid #334155 !important;
+  border-radius:999px !important;
+  padding:7px 11px !important;
+  font-size:13px !important;
+  font-weight:700 !important;
+  line-height:1.1 !important;
+}
+.detail-top-rank-line.rank-1{
+  color:#fef3c7 !important;
+  border-color:#facc15 !important;
+  background:rgba(120,83,8,.42) !important;
+}
+.detail-top-rank-line.rank-2{
+  color:#f8fafc !important;
+  border-color:#cbd5e1 !important;
+  background:rgba(51,65,85,.52) !important;
+}
+.detail-top-rank-line.rank-3{
+  color:#fed7aa !important;
+  border-color:#fb923c !important;
+  background:rgba(124,45,18,.42) !important;
+}
+.detail-top-rank-line .rank-ex-name{
+  color:inherit !important;
+  max-width:260px !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+}
+.detail-top-rank-line .rank-total-small{
+  color:#93c5fd !important;
+  font-size:11px !important;
+  font-weight:600 !important;
+}
+.detail-top-rank-empty{
+  color:#94a3b8 !important;
+  font-size:12px !important;
+  font-weight:600 !important;
+}
+</style>
+
+
+<style id="teacher-dashboard-v64-detail-title-rank-fix">
+.detail-header-v64{
+  align-items:flex-start !important;
+  gap:16px !important;
+}
+.detail-title-wrap-v64{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  gap:8px !important;
+  min-width:0 !important;
+  flex:1 1 auto !important;
+}
+.detail-title-wrap-v64 #detailName{
+  margin:0 !important;
+}
+.detail-title-wrap-v64 #detailRankBadges{
+  display:block !important;
+  width:100% !important;
+  min-height:28px !important;
+  margin:0 0 2px 0 !important;
+  padding:0 !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
+.detail-title-wrap-v64 .detail-top-rank-linebox{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  gap:6px !important;
+  width:100% !important;
+}
+.detail-title-wrap-v64 .detail-top-rank-line{
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:7px !important;
+  color:#f8fafc !important;
+  background:rgba(15,23,42,.72) !important;
+  border:1px solid #334155 !important;
+  border-radius:999px !important;
+  padding:7px 11px !important;
+  font-size:13px !important;
+  font-weight:700 !important;
+  line-height:1.1 !important;
+}
+.detail-title-wrap-v64 .detail-top-rank-line.rank-1{
+  color:#fef3c7 !important;
+  border-color:#facc15 !important;
+  background:rgba(120,83,8,.42) !important;
+}
+.detail-title-wrap-v64 .detail-top-rank-line.rank-2{
+  color:#f8fafc !important;
+  border-color:#cbd5e1 !important;
+  background:rgba(51,65,85,.52) !important;
+}
+.detail-title-wrap-v64 .detail-top-rank-line.rank-3{
+  color:#fed7aa !important;
+  border-color:#fb923c !important;
+  background:rgba(124,45,18,.42) !important;
+}
+.detail-title-wrap-v64 .rank-ex-name{
+  color:inherit !important;
+  max-width:280px !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+}
+.detail-title-wrap-v64 .rank-total-small{
+  color:#93c5fd !important;
+  font-size:11px !important;
+  font-weight:600 !important;
+}
+.detail-title-wrap-v64 .detail-top-rank-empty{
+  color:#94a3b8 !important;
+  font-size:12px !important;
+  font-weight:600 !important;
+}
+@media(max-width:720px){
+  .detail-header-v64{
+    flex-direction:column !important;
+  }
+}
+</style>
+
+
+<style id="dashboard-v67-injury-fix-style">
+/* ===== V67 부상 집계/표시 수정 ===== */
+.dashboard-four-charts{
+  display:grid!important;
+  grid-template-columns:.9fr 1.05fr 1.05fr 1.05fr!important;
+  gap:14px!important;
+  align-items:stretch!important;
+}
+.class-card-btns{gap:8px!important;}
+.class-stat-btn.injury-stat-btn .stat-val{color:#f87171!important;}
+.class-stat-btn.injury-stat-btn:hover,
+.class-stat-btn.injury-stat-btn.active{border-color:#f87171!important;background:#2a1720!important;}
+.injury-card .card-title{color:#fecaca!important;}
+.injury-roster-item{align-items:flex-start!important;}
+.injury-roster-main{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.injury-roster-name{color:#e5e7eb;font-weight:600;white-space:normal;word-break:keep-all;}
+.injury-roster-reason{color:#fca5a5;font-size:11.5px;line-height:1.35;word-break:keep-all;}
+.injury-count-badge{color:#fecaca!important;background:#450a0a!important;border:1px solid #7f1d1d!important;}
+.date-summary-card.has-injury{border-color:#7f1d1d!important;box-shadow:0 10px 24px rgba(127,29,29,.26)!important;}
+.part-pill.injury{background:#450a0a;color:#fecaca;border:1px solid #7f1d1d;}
+.date-injury-list{margin-top:12px;border:1px solid #7f1d1d;background:#1b0f13;border-radius:16px;padding:10px;}
+.date-injury-title{font-size:11px;font-weight:700;color:#fecaca;margin-bottom:7px;display:flex;align-items:center;gap:5px;}
+.date-injury-item{display:flex;align-items:flex-start;gap:7px;margin-top:6px;font-size:12px;line-height:1.45;}
+.date-injury-item:first-of-type{margin-top:0;}
+.date-injury-part{flex:0 0 auto;background:#7f1d1d;color:#fee2e2;border-radius:999px;padding:3px 8px;font-size:10.5px;font-weight:700;}
+.date-injury-reason{color:#fca5a5;word-break:keep-all;}
+.date-injury-empty{color:#94a3b8;font-size:11.5px;font-weight:600;}
+@media(max-width:1180px){.dashboard-four-charts{grid-template-columns:1fr!important;}}
+@media(max-width:720px){.class-card-btns{gap:6px!important}.class-stat-btn{padding:10px 5px!important}.class-stat-btn .stat-label{font-size:10px!important}.class-stat-btn .stat-val{font-size:18px!important}.date-injury-item{flex-direction:column;gap:4px;}}
+@media print{.date-injury-list{border-color:#ddd!important;background:#fff!important}.date-injury-title,.date-injury-reason{color:#222!important}.date-injury-part{background:#eee!important;color:#111!important}}
+</style>
+
+
+<style id="v69-class-card-filter-style">
+/* v69: 상단 탭 삭제 + 반별 카드 클릭 필터 */
+#tabs,.tabs{display:none!important;}
+.class-card{cursor:pointer;transition:transform .16s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease;}
+.class-card:hover{transform:translateY(-2px);border-color:#fb923c!important;box-shadow:0 12px 26px rgba(249,115,22,.18)!important;}
+.class-card.selected-class{border-color:#fb923c!important;box-shadow:0 0 0 3px rgba(251,146,60,.20),0 14px 30px rgba(249,115,22,.22)!important;background:linear-gradient(180deg,#172232 0%,#101821 100%)!important;}
+.class-card.selected-class .class-card-title::after{content:"선택됨";margin-left:8px;padding:3px 8px;border-radius:999px;background:#fb923c;color:#fff;font-size:10px;font-weight:700;vertical-align:middle;}
+.class-stat-btn{cursor:pointer;}
+</style>
+
+
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style id="unify-typography">
+body{ -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; text-rendering:optimizeLegibility; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="hero-copy">
+      <span class="hero-eyebrow"><i class="ti ti-sparkles"></i> 창원예술학교 체육과</span>
+      <h1><i class="ti ti-chart-bar"></i> 체육 수업 교사 대시보드</h1>
+      <div class="hero-sub">학생 운동 기록을 한눈에 확인하고, 반별 현황과 개별 누적 데이터를 빠르게 조회할 수 있습니다.</div>
+    </div>
+    <button class="reload-btn" onclick="loadData()"><i class="ti ti-refresh"></i> 새로고침</button>
+  </div>
+  <!-- v69: 상단 전체/1~5반 탭 삭제, 반별 카드 클릭 필터로 대체 -->
+  <div id="mainContent">
+    <div class="metric-row" id="metrics">
+    <div class="metric"><div class="lbl">전체 학생</div><div class="val">11명</div><div class="sub">선택 반 기준</div></div>
+    <div class="metric"><div class="lbl">제출 완료</div><div class="val" style="color:#2e7d32;">11명</div><div class="sub">총 34건</div></div>
+    <div class="metric"><div class="lbl">미제출</div><div class="val" style="color:#c62828;">0명</div><div class="sub">확인 필요</div></div></div>
+    <div class="charts-row3 dashboard-two-charts">
+      <div class="card">
+        <div class="card-title">운동 종목 인기도</div>
+        <div class="legend">
+          <span><i style="background:#534AB7;"></i>상체</span>
+          <span><i style="background:#1D9E75;"></i>유산소</span>
+          <span><i style="background:#D85A30;"></i>하체</span>
+        </div>
+        <div style="position:relative;height:180px;"><canvas id="chartPop" role="img" aria-label="운동 종목별 인기도"></canvas></div>
+      </div>
+      <div class="card date-card">
+        <div class="card-title">날짜별 제출 현황</div>
+        <div class="legend">
+          <span><i style="background:#1D9E75;"></i>제출 건수</span>
+          <span class="scroll-guide">최신 날짜 4개 우선 표시 · 오른쪽으로 스크롤하면 이전 날짜 확인</span>
+        </div>
+        <div class="date-chart-scroll" id="dateChartScroll">
+          <div class="date-chart-inner" id="dateChartInner">
+            <canvas id="chartDate" role="img" aria-label="날짜별 제출 건수"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-full">
+      <div class="card-title">학생 목록 — 클릭하면 제출 현황 조회</div>
+      <div class="stu-grid" id="stuGrid"><div class="stu-card" id="sc0" onclick="selectStudent(0)">
+      <div class="stu-no">4반 15번</div>
+      <div class="stu-name">11</div>
+      <span class="stu-cnt cnt-ok">8차시</span>
+    </div><div class="stu-card" id="sc1" onclick="selectStudent(1)">
+      <div class="stu-no">2반 1번</div>
+      <div class="stu-name">sss</div>
+      <span class="stu-cnt cnt-ok">5차시</span>
+    </div><div class="stu-card" id="sc2" onclick="selectStudent(2)">
+      <div class="stu-no">2반 1번</div>
+      <div class="stu-name">ㅁ</div>
+      <span class="stu-cnt cnt-ok">2차시</span>
+    </div><div class="stu-card" id="sc3" onclick="selectStudent(3)">
+      <div class="stu-no">2반 1번</div>
+      <div class="stu-name">ㄴㅁㅇ</div>
+      <span class="stu-cnt cnt-ok">4차시</span>
+    </div><div class="stu-card" id="sc4" onclick="selectStudent(4)">
+      <div class="stu-no">1반 1번</div>
+      <div class="stu-name">안녕</div>
+      <span class="stu-cnt cnt-warn">1차시</span>
+    </div><div class="stu-card" id="sc5" onclick="selectStudent(5)">
+      <div class="stu-no">1반 1번</div>
+      <div class="stu-name">ㄴㅇㅇㅇㅇ</div>
+      <span class="stu-cnt cnt-warn">1차시</span>
+    </div><div class="stu-card" id="sc6" onclick="selectStudent(6)">
+      <div class="stu-no">1반 15번</div>
+      <div class="stu-name">진수</div>
+      <span class="stu-cnt cnt-warn">1차시</span>
+    </div><div class="stu-card" id="sc7" onclick="selectStudent(7)">
+      <div class="stu-no">1반 12번</div>
+      <div class="stu-name">sdaddd</div>
+      <span class="stu-cnt cnt-warn">1차시</span>
+    </div><div class="stu-card" id="sc8" onclick="selectStudent(8)">
+      <div class="stu-no">1반 12번</div>
+      <div class="stu-name">aaa</div>
+      <span class="stu-cnt cnt-ok">3차시</span>
+    </div><div class="stu-card" id="sc9" onclick="selectStudent(9)">
+      <div class="stu-no">1반 2번</div>
+      <div class="stu-name">ㅗㅓㅏㅗㅓㅏ</div>
+      <span class="stu-cnt cnt-warn">1차시</span>
+    </div><div class="stu-card" id="sc10" onclick="selectStudent(10)">
+      <div class="stu-no">1반 1번</div>
+      <div class="stu-name">44</div>
+      <span class="stu-cnt cnt-ok">7차시</span>
+    </div></div>
+      <div class="detail-panel" id="detailPanel">
+        <div class="detail-header">
+          <div class="detail-title-wrap">
+            <h2 id="detailName"></h2>
+            <div id="detailRankBadges" class="detail-rank-badges"></div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button class="print-btn" onclick="printStudent()"><i class="ti ti-printer"></i> A4 출력</button>
+            <button class="close-btn" onclick="closeDetail()">닫기 ✕</button>
+          </div>
+        </div>
+        <div class="detail-subtitle">날짜별 운동부위 및 부상부위</div>
+        <div class="date-summary" id="dateSummary"></div>
+        <div class="detail-subtitle with-space">종목별 누적 기록</div>
+        <div id="exerciseLog"></div>
+      </div>
+    </div></div>
+</div>
+
+<script>
+// DASHBOARD_V60_LATEST_CACHE_BUST
+// DASHBOARD_V61_DETAIL_TOP3_ALWAYS_VISIBLE
+// DASHBOARD_V62_CARD_TOP3_ALWAYS_VISIBLE
+// DASHBOARD_V63_DETAIL_ONLY_TOP3
+// DASHBOARD_V64_DETAIL_NAME_UNDERLINE_TOP3_FIXED
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbysBpa2lAGX5bv-xDUBEuXGXnK31ULxBsZyidNWrtTGszkkPPLedIE_2ZFRtXot_cpp/exec";
+const ALL_NTHS = ["1차시","2차시","3차시","4차시"];
+const purple='#A855F7', teal='#06B6D4', coral='#FB923C', gray='#94A3B8';
+
+let ALL_STUDENTS = [];
+let currentClass = 0;
+let popChart=null, submitChart=null, dateChart=null, injuryDateChart=null;
+let exCharts = {}; // 종목별 차트 인스턴스
+let selectedStu = null;
+let restDateChart = null;
+let selectedDetailKey = '';
+
+function loadData() {
+  document.getElementById('mainContent').innerHTML = '<div class="loading"><i class="ti ti-loader"></i> 데이터 불러오는 중...</div>';
+
+  const cbName = '_dashCb_' + Date.now();
+  const script = document.createElement('script');
+  const timeout = setTimeout(() => {
+    delete window[cbName];
+    if (document.body.contains(script)) document.body.removeChild(script);
+    document.getElementById('mainContent').innerHTML = `<div class="error"><i class="ti ti-alert-circle"></i> 응답 시간 초과. 인터넷 연결을 확인하고 다시 시도해주세요.<br><br><button class="reload-btn" onclick="loadData()" style="margin:0 auto;">다시 시도</button></div>`;
+  }, 15000);
+
+  window[cbName] = function(json) {
+    clearTimeout(timeout);
+    delete window[cbName];
+    if (document.body.contains(script)) document.body.removeChild(script);
+    if (!json.ok) {
+      document.getElementById('mainContent').innerHTML = `<div class="error"><i class="ti ti-alert-circle"></i> 데이터 오류: ${json.error || '알 수 없는 오류'}<br><br><button class="reload-btn" onclick="loadData()" style="margin:0 auto;">다시 시도</button></div>`;
+      return;
+    }
+    ALL_STUDENTS = normalizeDashboardData(json.students || []);
+    renderMain();
+  };
+
+  script.onerror = function() {
+    clearTimeout(timeout);
+    delete window[cbName];
+    document.getElementById('mainContent').innerHTML = `<div class="error"><i class="ti ti-alert-circle"></i> 데이터 불러오기 실패<br><br><button class="reload-btn" onclick="loadData()" style="margin:0 auto;">다시 시도</button></div>`;
+  };
+
+  script.src = WEB_APP_URL + '?action=getData&callback=' + cbName + '&_t=' + Date.now();
+  document.body.appendChild(script);
+}
+
+function normalizeDashboardNo(value) {
+  const text = String(value || '').trim();
+  if (!text) return '';
+  return text.replace('번','').trim() + '번';
+}
+
+function normalizeDashboardClass(value) {
+  const text = String(value || '').trim();
+  if (!text) return '';
+  return text.endsWith('반') ? text : text + '반';
+}
+
+
+function cleanDashboardStudentName(value) {
+  let s = String(value || '').trim().replace(/\s+/g, '');
+  if (!s) return '';
+  s = s.replace(/^\d+\s*반?\s*\d*\s*번?/, '');
+  s = s.replace(/^\d+(?=[가-힣])/, '');
+  return s || String(value || '').trim();
+}
+
+function normalizeTopRanks(ranks) {
+  if (!Array.isArray(ranks)) return [];
+  return ranks
+    .map(r => ({
+      name: String(r.name || r.exerciseName || '').trim(),
+      rank: Number(r.rank || 0),
+      total: Number(r.total || 0),
+      unit: String(r.unit || '')
+    }))
+    .filter(r => r.name && r.rank >= 1 && r.rank <= 3)
+    .sort((a,b) => a.rank - b.rank || a.name.localeCompare(b.name, 'ko'));
+}
+
+
+function dashboardTimeValue(value) {
+  const t = Date.parse(String(value || '').replace(' ', 'T'));
+  return Number.isFinite(t) ? t : 0;
+}
+
+function normalizeDashboardData(students) {
+  return (students || []).map(s => {
+    const records = Array.isArray(s.records) ? s.records : [];
+    const normalizedRecords = records.map(r => ({
+        ...r,
+        nth: String(r.nth || '').trim(),
+        date: String(r.date || '').slice(0,10),
+        submittedAt: String(r.submittedAt || r.submitAt || r.createdAt || r.date || '').trim(),
+        submitKey: String(r.submitKey || '').trim(),
+        cardio: Array.isArray(r.cardio) ? r.cardio.filter(Boolean) : [r.cardio1, r.cardio2].filter(Boolean),
+        upper: Array.isArray(r.upper) ? r.upper.filter(Boolean) : [r.upper1, r.upper2, r.upper3].filter(Boolean),
+        lower: Array.isArray(r.lower) ? r.lower.filter(Boolean) : [r.lower1].filter(Boolean),
+        u1r: r.u1r ?? r.u1rep ?? r['상체_1회'] ?? '',
+        u2r: r.u2r ?? r.u2rep ?? r['상체_2회'] ?? '',
+        u3r: r.u3r ?? r.u3rep ?? r['상체_3회'] ?? '',
+        l1r: r.l1r ?? r.l1rep ?? r['하체_1회'] ?? ''
+      }))
+      .sort((a,b) => dashboardTimeValue(b.submittedAt || b.date) - dashboardTimeValue(a.submittedAt || a.date));
+
+    return {
+      ...s,
+      class: normalizeDashboardClass(s.class || s.cls || s.classLabel),
+      no: normalizeDashboardNo(s.no || s.studentNo || s.number),
+      name: cleanDashboardStudentName(s.name || s.studentName || ''),
+      latestAt: String(s.latestAt || (normalizedRecords[0] && (normalizedRecords[0].submittedAt || normalizedRecords[0].date)) || ''),
+      topRanks: normalizeTopRanks(s.topRanks),
+      records: normalizedRecords
+    };
+  }).filter(s => s.class && s.no && s.name);
+}
+
+function getFiltered() {
+  if (currentClass === 0) return ALL_STUDENTS;
+  const label = currentClass + "반";
+  return ALL_STUDENTS.filter(s => s.class === label);
+}
+
+function switchClass(c) {
+  currentClass = Number(c) || 0;
+  closeDetail();
+  renderAll();
+}
+
+function selectClassCard(c) {
+  currentClass = Number(c) || 0;
+  closeDetail();
+  renderAll();
+}
+
+function renderMain() {
+  document.getElementById('mainContent').innerHTML = `
+    <div class="class-cards-row" id="classCards"></div>
+    <div style="display:none" id="metrics"></div>
+    <div class="charts-row3 dashboard-four-charts">
+      <div class="card">
+        <div class="card-title">운동 종목 인기도</div>
+        <div class="legend">
+          <span><i style="background:#534AB7;"></i>상체</span>
+          <span><i style="background:#1D9E75;"></i>유산소</span>
+          <span><i style="background:#D85A30;"></i>하체</span>
+        </div>
+        <div style="position:relative;height:180px;"><canvas id="chartPop" role="img" aria-label="운동 종목별 인기도"></canvas></div>
+      </div>
+      <div class="card date-card">
+        <div class="card-title">날짜별 제출 현황</div>
+        <div class="legend">
+          <span><i style="background:#1D9E75;"></i>제출 건수</span>
+          <span class="scroll-guide">막대 터치 → 제출 명단</span>
+        </div>
+        <div class="date-chart-scroll" id="dateChartScroll">
+          <div class="date-chart-inner" id="dateChartInner">
+            <canvas id="chartDate" role="img" aria-label="날짜별 제출 건수"></canvas>
+          </div>
+        </div>
+        <div class="roster-panel" id="dateRosterPanel">날짜 막대를 터치하면 제출한 학생 명단이 표시됩니다.</div>
+      </div>
+      <div class="card date-card rest-card">
+        <div class="card-title">날짜별 휴식일 현황</div>
+        <div class="legend">
+          <span><i style="background:#84cc16;"></i>휴식 제출</span>
+          <span class="scroll-guide">막대 터치 → 휴식 명단</span>
+        </div>
+        <div class="date-chart-scroll" id="restChartScroll">
+          <div class="date-chart-inner" id="restChartInner">
+            <canvas id="chartRestDate" role="img" aria-label="날짜별 휴식일 건수"></canvas>
+          </div>
+        </div>
+        <div class="roster-panel" id="restRosterPanel">휴식일 막대를 터치하면 휴식으로 제출한 학생 명단이 표시됩니다.</div>
+      </div>
+      <div class="card date-card injury-card">
+        <div class="card-title">날짜별 부상 현황</div>
+        <div class="legend">
+          <span><i style="background:#ef4444;"></i>부상 학생</span>
+          <span class="scroll-guide">막대 터치 → 부상 사유</span>
+        </div>
+        <div class="date-chart-scroll" id="injuryChartScroll">
+          <div class="date-chart-inner" id="injuryChartInner">
+            <canvas id="chartInjuryDate" role="img" aria-label="날짜별 부상 학생 수"></canvas>
+          </div>
+        </div>
+        <div class="roster-panel" id="injuryRosterPanel">부상 막대를 터치하면 부상 학생과 사유가 표시됩니다.</div>
+      </div>
+    </div>
+    <div class="card-full">
+      <div class="card-title">학생 목록 — 클릭하면 제출 현황 조회</div>
+      <div class="stu-grid" id="stuGrid"></div>
+      <div class="detail-panel" id="detailPanel">
+        <div class="detail-header detail-header-v64">
+          <div class="detail-title-wrap-v64">
+            <h2 id="detailName"></h2>
+            <div id="detailRankBadges" class="detail-rank-badges"></div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button class="print-btn" onclick="printStudent()"><i class="ti ti-printer"></i> A4 출력</button>
+            <button class="close-btn" onclick="closeDetail()">닫기 ✕</button>
+          </div>
+        </div>
+        <div class="detail-subtitle">날짜별 운동부위 및 부상부위</div>
+        <div class="date-summary" id="dateSummary"></div>
+        <div class="detail-subtitle with-space">종목별 누적 기록</div>
+        <div id="exerciseLog"></div>
+      </div>
+    </div>`;
+  renderAll();
+}
+
+function renderAll() {
+  if (typeof Chart === 'undefined') {
+    document.getElementById('mainContent').innerHTML = '<div class="error"><i class="ti ti-alert-circle"></i> Chart.js 로드 실패: 인터넷 연결을 확인한 뒤 새로고침해주세요.</div>';
+    return;
+  }
+  const list = getFiltered();
+  renderMetrics(list);
+  renderPopChart(list);
+  renderDateChart(list);
+  renderRestDateChart(list);
+  renderInjuryDateChart(list);
+  renderStudents(list);
+}
+
+function renderMetrics(list) {
+  // 반별 카드 렌더링
+  const classLabels = ['1반','2반','3반','4반','5반'];
+  const container = document.getElementById('classCards');
+  if (!container) return;
+  container.innerHTML = classLabels.map(cls => {
+    const studs = ALL_STUDENTS.filter(s => s.class === cls);
+    const submitStuds = studs.filter(s => getExerciseRecords(s.records).length > 0);
+    const restStuds = studs.filter(s => getRestRecords(s.records).length > 0);
+    const injuryStuds = studs.filter(s => getInjuryRecords(s.records).length > 0);
+
+    // 날짜별 제출 학생
+    const submitByDate = {};
+    submitStuds.forEach(s => {
+      getExerciseRecords(s.records).forEach(r => {
+        const d = String(r.date || r.submittedAt || '').slice(0,10);
+        if (!d) return;
+        if (!submitByDate[d]) submitByDate[d] = [];
+        if (!submitByDate[d].includes(studentLabel(s))) submitByDate[d].push(studentLabel(s));
+      });
+    });
+    // 날짜별 휴식 학생
+    const restByDate = {};
+    restStuds.forEach(s => {
+      getRestRecords(s.records).forEach(r => {
+        const d = String(r.date || r.submittedAt || '').slice(0,10);
+        if (!d) return;
+        if (!restByDate[d]) restByDate[d] = [];
+        if (!restByDate[d].includes(studentLabel(s))) restByDate[d].push(studentLabel(s));
+      });
+    });
+    // 날짜별 부상 학생 + 사유
+    const injuryByDate = {};
+    injuryStuds.forEach(s => {
+      getInjuryRecords(s.records).forEach(r => {
+        const d = String(r.date || r.submittedAt || '').slice(0,10);
+        if (!d) return;
+        if (!injuryByDate[d]) injuryByDate[d] = [];
+        injuryByDate[d].push({student:s, reason:injuryTextForRecord(r)});
+      });
+    });
+
+    const submitDateHtml = Object.keys(submitByDate).sort().map(d =>
+      `<div class="class-dropdown-date">${formatShortDate(d)} 제출 학생</div><div class="class-dropdown-names">${submitByDate[d].map(escapeHtml).join(', ')}</div>`
+    ).join('') || '<div class="class-dropdown-names" style="color:#64748b;">기록 없음</div>';
+
+    const restDateHtml = Object.keys(restByDate).sort().map(d =>
+      `<div class="class-dropdown-date">${formatShortDate(d)} 휴식 학생</div><div class="class-dropdown-names">${restByDate[d].map(escapeHtml).join(', ')}</div>`
+    ).join('') || '<div class="class-dropdown-names" style="color:#64748b;">기록 없음</div>';
+
+    const injuryDateHtml = Object.keys(injuryByDate).sort().map(d =>
+      `<div class="class-dropdown-date">${formatShortDate(d)} 부상 학생</div><div class="class-dropdown-names">${injuryByDate[d].map(({student,reason}) => `${escapeHtml(studentLabel(student))} - ${escapeHtml(reason)}`).join('<br>')}</div>`
+    ).join('') || '<div class="class-dropdown-names" style="color:#64748b;">기록 없음</div>';
+
+    const cid = cls.replace('반','');
+    return `<div class="class-card ${Number(currentClass) === Number(cid) ? 'selected-class' : ''}" data-class-id="${cid}" onclick="selectClassCard(${cid})">
+      <div class="class-card-title">🏫 ${cls}</div>
+      <div class="class-card-btns">
+        <button class="class-stat-btn submit-btn" onclick="event.stopPropagation(); toggleClassDrop('submit-${cid}', this)">
+          <div class="stat-label">제출</div>
+          <div class="stat-val">${submitStuds.length}명</div>
+        </button>
+        <button class="class-stat-btn rest-btn" onclick="event.stopPropagation(); toggleClassDrop('rest-${cid}', this)">
+          <div class="stat-label">휴식</div>
+          <div class="stat-val">${restStuds.length}명</div>
+        </button>
+        <button class="class-stat-btn injury-stat-btn" onclick="event.stopPropagation(); toggleClassDrop('injury-${cid}', this)">
+          <div class="stat-label">부상</div>
+          <div class="stat-val">${injuryStuds.length}명</div>
+        </button>
+      </div>
+      <div class="class-dropdown" id="drop-submit-${cid}">${submitDateHtml}</div>
+      <div class="class-dropdown" id="drop-rest-${cid}">${restDateHtml}</div>
+      <div class="class-dropdown" id="drop-injury-${cid}">${injuryDateHtml}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleClassDrop(id, btn) {
+  const drop = document.getElementById('drop-' + id);
+  if (!drop) return;
+  const isOpen = drop.classList.contains('open');
+  // 같은 카드 내 다른 드롭다운 닫기
+  const card = btn.closest('.class-card');
+  card.querySelectorAll('.class-dropdown').forEach(d => { d.classList.remove('open'); });
+  card.querySelectorAll('.class-stat-btn').forEach(b => { b.classList.remove('active'); });
+  if (!isOpen) {
+    drop.classList.add('open');
+    btn.classList.add('active');
+  }
+}
+
+
+
+function parseMaybeJsonArray(value) {
+  if (Array.isArray(value)) return value;
+  const text = String(value ?? '').trim();
+  if (!text) return [];
+  if ((text.startsWith('[') && text.endsWith(']')) || (text.startsWith('{') && text.endsWith('}'))) {
+    try {
+      const parsed = JSON.parse(text);
+      return Array.isArray(parsed) ? parsed : [parsed];
+    } catch(e) {}
+  }
+  return [];
+}
+
+function splitInjuryText(text) {
+  return String(text || '')
+    .split(/\s*(?:\/|,|;|\n)\s*/)
+    .map(x => x.trim())
+    .filter(Boolean);
+}
+
+function normalizeInjuryPart(part) {
+  const t = String(part || '').trim();
+  if (!t) return '부상';
+  if (/cardio|유산소/i.test(t)) return '유산소';
+  if (/upper|상체/i.test(t)) return '상체';
+  if (/lower|하체/i.test(t)) return '하체';
+  return t;
+}
+
+function addInjuryItem(list, part, reason) {
+  const p = normalizeInjuryPart(part);
+  const r = String(reason || '').trim();
+  if (!p && !r) return;
+  const key = p + '|' + r;
+  if (list.some(x => (x.part + '|' + x.reason) === key)) return;
+  list.push({ part:p || '부상', reason:r || '사유 미입력' });
+}
+
+function extractRecordInjuries(r) {
+  if (!r) return [];
+  const out = [];
+
+  parseMaybeJsonArray(r.injuries || r.injuriesJson || r['부상목록']).forEach(item => {
+    if (typeof item === 'string') {
+      const m = item.match(/^([^:：\-]+)\s*[:：\-]\s*(.+)$/);
+      addInjuryItem(out, m ? m[1] : '부상', m ? m[2] : item);
+    } else if (item && typeof item === 'object') {
+      addInjuryItem(out, item.part || item.bodyPart || item.area || item.type || item.category || item['부상부위'], item.reason || item.memo || item.note || item.text || item['부상사유']);
+    }
+  });
+
+  const directPart = r.injuryPart || r.injuryParts || r.injuryArea || r.injuryBodyPart || r.injury_part || r.injury_parts || r['부상부위'] || r['부상부위들'];
+  const directReason = r.injuryReason || r.injuryReasons || r.injuryText || r.injuryMemo || r.injury_reason || r.injury_reasons || r['부상사유'] || r['부상사유들'];
+  if (directPart || directReason) {
+    const parts = splitInjuryText(directPart);
+    const reasons = splitInjuryText(directReason);
+    if (parts.length > 1 || reasons.length > 1) {
+      const n = Math.max(parts.length, reasons.length);
+      for (let i=0;i<n;i++) addInjuryItem(out, parts[i] || parts[0] || '부상', reasons[i] || reasons[0] || '사유 미입력');
+    } else {
+      const reasonText = String(directReason || '').trim();
+      const m = reasonText.match(/^([^:：\-]+)\s*[:：\-]\s*(.+)$/);
+      addInjuryItem(out, directPart || (m ? m[1] : '부상'), m ? m[2] : reasonText);
+    }
+  }
+
+  [
+    ['유산소', r.cardioInjuryReason || r.cardioReason || r['유산소부상사유'] || r['유산소쉬는이유']],
+    ['상체', r.upperInjuryReason || r.upperReason || r['상체부상사유'] || r['상체쉬는이유']],
+    ['하체', r.lowerInjuryReason || r.lowerReason || r['하체부상사유'] || r['하체쉬는이유']]
+  ].forEach(([part, reason]) => { if (String(reason || '').trim()) addInjuryItem(out, part, reason); });
+
+  return out;
+}
+
+function hasInjuryRecord(r) {
+  return extractRecordInjuries(r).length > 0;
+}
+
+function getInjuryRecords(records) {
+  return (records || []).filter(hasInjuryRecord);
+}
+
+function injuryTextForRecord(r) {
+  const items = extractRecordInjuries(r);
+  return items.length ? items.map(x => `${x.part} - ${x.reason}`).join(' / ') : '사유 미입력';
+}
+
+function boolLike(value) {
+  const text = String(value ?? '').trim().toLowerCase();
+  return value === true || text === 'true' || text === '1' || text === 'yes' || text === 'y' || text === '휴식' || text === '휴식일';
+}
+
+function isRestRecord(r) {
+  if (!r) return false;
+  if (boolLike(r.restDay) || boolLike(r.isRest) || boolLike(r.rest) || boolLike(r.rest_day) || boolLike(r['휴식일']) || boolLike(r['휴식'])) return true;
+  const reason = String(r.restReason || r.reason || r['휴식사유'] || '').trim();
+  if (reason.includes('휴식') || reason.includes('몸 상태')) return true;
+  const status = String(r.status || r.type || r.kind || r.submitType || '').trim().toLowerCase();
+  return status.includes('rest') || status.includes('휴식');
+}
+
+function hasExerciseContent(r) {
+  if (!r) return false;
+  const arrays = ['cardio','upper','lower','core'].some(k => Array.isArray(r[k]) && r[k].filter(Boolean).length > 0);
+  const fields = [r.cardio1,r.cardio2,r.upper1,r.upper2,r.upper3,r.lower1,r.core1,r.core2,r.core3].some(Boolean);
+  return arrays || fields;
+}
+
+function getExerciseRecords(records) {
+  return (records || []).filter(r => !isRestRecord(r) && hasExerciseContent(r));
+}
+
+function getRestRecords(records) {
+  return (records || []).filter(isRestRecord);
+}
+
+function studentLabel(s) {
+  return `${s.class || ''} ${s.no || ''} ${s.name || ''}`.trim();
+}
+
+function rosterForDate(list, date, mode) {
+  const isRest = mode === 'rest';
+  const isInjury = mode === 'injury';
+  return (list || []).map(s => {
+    const records = (s.records || []).filter(r => {
+      const sameDate = r.date === date;
+      if (!sameDate) return false;
+      if (isInjury) return hasInjuryRecord(r);
+      return isRest ? isRestRecord(r) : !isRestRecord(r);
+    });
+    return { student:s, count:records.length, records };
+  }).filter(x => x.count > 0);
+}
+
+function renderRosterPanel(list, date, mode) {
+  const panel = document.getElementById(mode === 'rest' ? 'restRosterPanel' : mode === 'injury' ? 'injuryRosterPanel' : 'dateRosterPanel');
+  if (!panel) return;
+  const rows = rosterForDate(list, date, mode);
+  const title = `${formatShortDate(date)} ${mode === 'rest' ? '휴식 명단' : mode === 'injury' ? '부상 학생' : '제출 명단'}`;
+  if (!rows.length) {
+    panel.innerHTML = `<div class="roster-title">${title}</div><div class="roster-empty">해당 날짜 기록 없음</div>`;
+    return;
+  }
+
+  if (mode === 'injury') {
+    panel.innerHTML = `<div class="roster-title">${title} <span>${rows.length}명</span></div>
+      <div class="roster-list">${rows.map(({student,records}) => `
+        <div class="roster-item injury-roster-item">
+          <div class="injury-roster-main">
+            <span class="injury-roster-name">${escapeHtml(studentLabel(student))}</span>
+            <span class="injury-roster-reason">${escapeHtml(records.map(injuryTextForRecord).join(' / '))}</span>
+          </div>
+          <b class="injury-count-badge">부상 ${records.length}회</b>
+        </div>`).join('')}</div>`;
+    return;
+  }
+
+  panel.innerHTML = `<div class="roster-title">${title} <span>${rows.length}명</span></div>
+    <div class="roster-list">${rows.map(({student,count}) => `
+      <div class="roster-item">
+        <span>${escapeHtml(studentLabel(student))}</span>
+        <b>${mode === 'rest' ? '휴식' : '제출'} ${count}회</b>
+      </div>`).join('')}</div>`;
+}
+
+function renderPopChart(list) {
+  const counts = {};
+  list.flatMap(s => getExerciseRecords(s.records)).forEach(r => {
+    [...(r.cardio||[]),...(r.upper||[]),...(r.lower||[])].forEach(ex => { counts[ex] = (counts[ex]||0)+1; });
+  });
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  if (!sorted.length) return;
+  const cardioEx = ['Rowing Machine','Running Machine','Stepper Machine','Ankle Jump Rope','Jump Rope','Indoor Cycle'];
+  const lowerEx  = ['Squat','Lunge','Machine Squat','Leg Extension','Bulgarian'];
+  const colors = sorted.map(([ex]) => lowerEx.includes(ex)?coral:cardioEx.includes(ex)?teal:purple);
+  if (popChart) popChart.destroy();
+  popChart = new Chart(document.getElementById('chartPop'), {
+    type:'bar',
+    data:{labels:sorted.map(([e])=>e.length>9?e.slice(0,8)+'…':e),datasets:[{data:sorted.map(([,c])=>c),backgroundColor:colors,borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#888',font:{size:10},autoSkip:false,maxRotation:30},grid:{color:'rgba(0,0,0,0.05)'}},y:{ticks:{color:'#888',font:{size:11}},grid:{color:'rgba(0,0,0,0.05)'}}}}
+  });
+}
+
+function setupScrollableDateChart(kind, sorted) {
+  const cfg = {
+    rest: {inner:'restChartInner', scroll:'restChartScroll', canvas:'chartRestDate', empty:'날짜별 휴식 기록 없음', aria:'날짜별 휴식일 건수'},
+    injury: {inner:'injuryChartInner', scroll:'injuryChartScroll', canvas:'chartInjuryDate', empty:'날짜별 부상 기록 없음', aria:'날짜별 부상 학생 수'},
+    submit: {inner:'dateChartInner', scroll:'dateChartScroll', canvas:'chartDate', empty:'날짜별 제출 기록 없음', aria:'날짜별 제출 건수'}
+  }[kind] || {inner:'dateChartInner', scroll:'dateChartScroll', canvas:'chartDate', empty:'날짜별 제출 기록 없음', aria:'날짜별 제출 건수'};
+  const inner = document.getElementById(cfg.inner);
+  const scroller = document.getElementById(cfg.scroll);
+  if (!inner) return null;
+  if (!sorted.length) {
+    inner.style.width = '100%';
+    inner.innerHTML = `<div class="empty-date-chart">${cfg.empty}</div>`;
+    return null;
+  }
+  const slot = 126;
+  const visible = Math.min(sorted.length, 4);
+  const viewport = Math.max(420, visible * slot);
+  if (scroller) scroller.style.maxWidth = viewport + 'px';
+  inner.style.width = (sorted.length > 4 ? sorted.length * slot : '100%') + (sorted.length > 4 ? 'px' : '');
+  inner.innerHTML = `<canvas id="${cfg.canvas}" role="img" aria-label="${cfg.aria}"></canvas>`;
+  if (scroller) scroller.scrollLeft = 0;
+  return document.getElementById(cfg.canvas);
+}
+
+function renderDateChart(list) {
+  const counts = {};
+  list.forEach(s => getExerciseRecords(s.records).forEach(r => {
+    if (r.date) counts[r.date] = (counts[r.date] || 0) + 1;
+  }));
+
+  const sorted = Object.entries(counts).sort((a, b) => b[0].localeCompare(a[0]));
+  if (dateChart) { dateChart.destroy(); dateChart = null; }
+  const canvas = setupScrollableDateChart('submit', sorted);
+  if (!canvas) return;
+
+  dateChart = new Chart(canvas, {
+    type:'bar',
+    data:{
+      labels: sorted.map(([d]) => formatShortDate(d)),
+      datasets:[{data: sorted.map(([,c]) => c), backgroundColor: teal, borderRadius: 8, barThickness: 34, maxBarThickness: 38}]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      onClick:(evt, elements) => {
+        if (!elements.length) return;
+        const date = sorted[elements[0].index]?.[0];
+        if (date) renderRosterPanel(list, date, 'submit');
+      },
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{title: items => sorted[items[0].dataIndex]?.[0] || '', label: item => `제출 ${item.raw}건`}}
+      },
+      scales:{
+        x:{ticks:{color:'#cbd5e1',font:{size:11,weight:'700'},autoSkip:false},grid:{display:false}},
+        y:{ticks:{color:'#94a3b8',font:{size:11},precision:0},grid:{color:'rgba(255,255,255,0.08)'},min:0,beginAtZero:true}
+      }
+    }
+  });
+}
+
+function renderRestDateChart(list) {
+  const counts = {};
+  list.forEach(s => getRestRecords(s.records).forEach(r => {
+    if (r.date) counts[r.date] = (counts[r.date] || 0) + 1;
+  }));
+
+  const sorted = Object.entries(counts).sort((a, b) => b[0].localeCompare(a[0]));
+  if (restDateChart) { restDateChart.destroy(); restDateChart = null; }
+  const canvas = setupScrollableDateChart('rest', sorted);
+  if (!canvas) return;
+
+  restDateChart = new Chart(canvas, {
+    type:'bar',
+    data:{
+      labels: sorted.map(([d]) => formatShortDate(d)),
+      datasets:[{data: sorted.map(([,c]) => c), backgroundColor: '#FACC15', borderRadius: 8, barThickness: 34, maxBarThickness: 38}]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      onClick:(evt, elements) => {
+        if (!elements.length) return;
+        const date = sorted[elements[0].index]?.[0];
+        if (date) renderRosterPanel(list, date, 'rest');
+      },
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{title: items => sorted[items[0].dataIndex]?.[0] || '', label: item => `휴식 ${item.raw}건`}}
+      },
+      scales:{
+        x:{ticks:{color:'#cbd5e1',font:{size:11,weight:'700'},autoSkip:false},grid:{display:false}},
+        y:{ticks:{color:'#94a3b8',font:{size:11},precision:0},grid:{color:'rgba(255,255,255,0.08)'},min:0,beginAtZero:true}
+      }
+    }
+  });
+}
+
+
+function renderInjuryDateChart(list) {
+  const byDate = {};
+  list.forEach(s => getInjuryRecords(s.records).forEach(r => {
+    if (!r.date) return;
+    if (!byDate[r.date]) byDate[r.date] = new Set();
+    byDate[r.date].add(studentLabel(s));
+  }));
+
+  const sorted = Object.entries(byDate)
+    .map(([d, set]) => [d, set.size])
+    .sort((a, b) => b[0].localeCompare(a[0]));
+
+  if (injuryDateChart) { injuryDateChart.destroy(); injuryDateChart = null; }
+  const canvas = setupScrollableDateChart('injury', sorted);
+  if (!canvas) return;
+
+  injuryDateChart = new Chart(canvas, {
+    type:'bar',
+    data:{
+      labels: sorted.map(([d]) => formatShortDate(d)),
+      datasets:[{data: sorted.map(([,c]) => c), backgroundColor: '#FB7185', borderRadius: 8, barThickness: 34, maxBarThickness: 38}]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      onClick:(evt, elements) => {
+        if (!elements.length) return;
+        const date = sorted[elements[0].index]?.[0];
+        if (date) renderRosterPanel(list, date, 'injury');
+      },
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{title: items => sorted[items[0].dataIndex]?.[0] || '', label: item => `부상 ${item.raw}명`}}
+      },
+      scales:{
+        x:{ticks:{color:'#cbd5e1',font:{size:11,weight:'700'},autoSkip:false},grid:{display:false}},
+        y:{ticks:{color:'#94a3b8',font:{size:11},precision:0},grid:{color:'rgba(255,255,255,0.08)'},min:0,beginAtZero:true}
+      }
+    }
+  });
+}
+
+function renderStudents(list) {
+  document.getElementById('stuGrid').innerHTML = list.map((s,i) => {
+    const cnt = getExerciseRecords(s.records).length;
+    const cls = cnt===0?'cnt-no':cnt<2?'cnt-warn':'cnt-ok';
+    const label = cnt===0?'운동 제출 0회':`제출 ${cnt}회`;
+    return `<div class="stu-card" id="sc${i}" onclick="selectStudent(${i})">
+      <div class="stu-no">${s.class} ${s.no}</div>
+      <div class="stu-name">${cleanDashboardStudentName(s.name)}</div>
+      <div class="stu-latest">${s.latestAt ? '최근 ' + escapeHtml(String(s.latestAt).slice(5,16)) : ''}</div>
+      <span class="stu-cnt ${cls}">${label}</span>
+    </div>`;
+  }).join('');
+}
+
+// 운동별 데이터 추출 헬퍼
+// 유산소 종목인지 판별
+const CARDIO_LIST = ['Rowing Machine','Running Machine','Stepper','Stepper Machine','Ankle Jump Rope','Jump Rope','Indoor Cycle'];
+const LOWER_LIST  = ['Squat','Lunge','Machine Squat','Leg Extension','Bulgarian'];
+
+function getExType(name) {
+  if (CARDIO_LIST.some(c => name.toLowerCase().includes(c.toLowerCase()))) return 'cardio';
+  if (LOWER_LIST.some(l => name.toLowerCase().includes(l.toLowerCase()))) return 'lower';
+  return 'upper';
+}
+
+// 학생의 전체 기록에서 종목별로 데이터 모으기
+function buildExerciseMap(records) {
+  // map: { 종목명: { type, rows: [{nth, date, ...강도, feel}] } }
+  const map = {};
+
+  records.forEach(r => {
+    // 유산소 (최대 2개)
+    [
+      { name: (r.cardio||[])[0], feel: r.cf1, t: r.c1t, res: r.c1r, spd: r.c1s, freq: r.c1f, cnt: r.c1c },
+      { name: (r.cardio||[])[1], feel: r.cf2, t: r.c2t, res: r.c2r, spd: r.c2s, freq: r.c2f, cnt: r.c2c }
+    ].forEach(ex => {
+      if (!ex.name) return;
+      if (!map[ex.name]) map[ex.name] = { type:'cardio', rows:[] };
+      map[ex.name].rows.push({ nth:r.nth, date:r.date, t:ex.t, res:ex.res, spd:ex.spd, freq:ex.freq, cnt:ex.cnt, feel:ex.feel });
+    });
+
+    // 상체 (최대 3개)
+    [
+      { name: (r.upper||[])[0], feel: r.uf1, s: r.u1s, rep: r.u1r, w: r.u1w },
+      { name: (r.upper||[])[1], feel: r.uf2, s: r.u2s, rep: r.u2r, w: r.u2w },
+      { name: (r.upper||[])[2], feel: r.uf3, s: r.u3s, rep: r.u3r, w: r.u3w }
+    ].forEach(ex => {
+      if (!ex.name) return;
+      if (!map[ex.name]) map[ex.name] = { type:'upper', rows:[] };
+      map[ex.name].rows.push({ nth:r.nth, date:r.date, s:ex.s, rep:ex.rep, w:ex.w, feel:ex.feel });
+    });
+
+    // 하체 (최대 1개)
+    if ((r.lower||[])[0]) {
+      const name = r.lower[0];
+      if (!map[name]) map[name] = { type:'lower', rows:[] };
+      map[name].rows.push({ nth:r.nth, date:r.date, s:r.l1s, rep:r.l1r, w:r.l1w, feel:r.lf1 });
+    }
+  });
+
+  return map;
+}
+
+
+function formatShortDate(dateText) {
+  const text = String(dateText || '').trim();
+  const m = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (!m) return text || '-';
+  return Number(m[2]) + '.' + Number(m[3]);
+}
+
+const CORE_EXERCISE_KEYWORDS = [
+  'plank', 'crunch', 'sit up', 'sit-up', 'situp',
+  'leg raise', 'hanging leg raise', 'russian twist',
+  'mountain climber', 'dead bug', 'bicycle', 'v-up', 'v up',
+  '플랭크', '크런치', '싯업', '레그레이즈', '행잉', '러시안', '마운틴'
+];
+
+function isCoreExerciseName(name) {
+  const lower = String(name || '').toLowerCase();
+  return CORE_EXERCISE_KEYWORDS.some(key => lower.includes(key.toLowerCase()));
+}
+
+function asCleanArray(value, fallbackValues=[]) {
+  if (Array.isArray(value)) return value.filter(Boolean);
+  return fallbackValues.filter(Boolean);
+}
+
+function buildDateBodySummary(records) {
+  const map = {};
+
+  const ensure = (date) => {
+    const d = date || '날짜 없음';
+    if (!map[d]) map[d] = { date:d, cardio:0, upper:0, core:0, lower:0, total:0, injuries:[] };
+    return map[d];
+  };
+
+  getExerciseRecords(records || []).forEach(r => {
+    const row = ensure(r.date || '날짜 없음');
+
+    const cardioList = asCleanArray(r.cardio, [r.cardio1, r.cardio2]);
+    const upperList = asCleanArray(r.upper, [r.upper1, r.upper2, r.upper3]);
+    const lowerList = asCleanArray(r.lower, [r.lower1]);
+    const explicitCoreList = asCleanArray(r.core, [r.core1, r.core2, r.core3]);
+
+    const coreFromUpper = upperList.filter(isCoreExerciseName).length;
+    const upperOnly = upperList.length - coreFromUpper;
+    const coreCount = explicitCoreList.length + coreFromUpper;
+
+    row.cardio += cardioList.length;
+    row.upper += Math.max(0, upperOnly);
+    row.core += coreCount;
+    row.lower += lowerList.length;
+    row.total += cardioList.length + Math.max(0, upperOnly) + coreCount + lowerList.length;
+
+    extractRecordInjuries(r).forEach(inj => row.injuries.push(inj));
+  });
+
+  // 운동 기록이 없지만 부상 정보만 저장된 경우도 카드에 표시한다.
+  (records || []).forEach(r => {
+    const injuries = extractRecordInjuries(r);
+    if (!injuries.length) return;
+    const row = ensure(r.date || '날짜 없음');
+    injuries.forEach(inj => {
+      const key = inj.part + '|' + inj.reason;
+      if (!row.injuries.some(x => (x.part + '|' + x.reason) === key)) row.injuries.push(inj);
+    });
+  });
+
+  return Object.values(map).sort((a,b) => String(b.date).localeCompare(String(a.date)));
+}
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  }[ch]));
+}
+
+function toJsString(value) {
+  return JSON.stringify(String(value ?? ''));
+}
+
+function getDateExerciseItems(records, date) {
+  const exMap = buildExerciseMap(records || []);
+  return Object.entries(exMap)
+    .filter(([name, info]) => info.rows.some(r => r.date === date))
+    .map(([name, info]) => {
+      const displayType = info.type === 'upper' && isCoreExerciseName(name) ? 'core' : info.type;
+      return { name, type: displayType };
+    })
+    .sort((a, b) => {
+      const order = { cardio:0, upper:1, core:2, lower:3 };
+      return (order[a.type] ?? 9) - (order[b.type] ?? 9) || a.name.localeCompare(b.name);
+    });
+}
+
+function getTypeLabel(type) {
+  return type === 'cardio' ? '유산소' : type === 'lower' ? '하체' : type === 'core' ? '코어' : '상체';
+}
+
+function renderDateBodySummary(records) {
+  const rows = buildDateBodySummary(records);
+  if (!rows.length) {
+    return '<div class="date-summary-empty">제출 기록 없음</div>';
+  }
+
+  return `<div class="date-summary-grid">${rows.map(row => {
+    const items = getDateExerciseItems(records, row.date);
+    const itemButtons = items.length
+      ? `<div class="date-exercise-list">${items.map(item => `
+          <button type="button"
+            class="date-exercise-chip ${item.type}"
+            data-date="${escapeHtml(row.date)}"
+            data-exercise="${escapeHtml(item.name)}"
+            onclick='toggleExercisePanel(${toJsString(row.date)}, ${toJsString(item.name)})'>
+            <span>${getTypeLabel(item.type)}</span>
+            <b>${escapeHtml(item.name)}</b>
+          </button>`).join('')}</div>`
+      : `<div class="date-exercise-empty">운동종목 없음</div>`;
+
+    const injuryItems = row.injuries || [];
+    const injuryHtml = injuryItems.length
+      ? `<div class="date-injury-list">
+          <div class="date-injury-title">🚑 부상부위 및 사유</div>
+          ${injuryItems.map(inj => `<div class="date-injury-item"><span class="date-injury-part">${escapeHtml(inj.part)}</span><span class="date-injury-reason">${escapeHtml(inj.reason)}</span></div>`).join('')}
+        </div>`
+      : '';
+
+    return `
+    <div class="date-summary-card ${injuryItems.length ? 'has-injury' : ''}">
+      <div class="date-summary-date">${formatShortDate(row.date)}</div>
+      <div class="date-summary-total">총 ${row.total}개 운동</div>
+      <div class="date-summary-parts">
+        <span class="part-pill cardio">유산소 <b>${row.cardio}</b></span>
+        <span class="part-pill upper">상체 <b>${row.upper}</b></span>
+        <span class="part-pill core">코어 <b>${row.core}</b></span>
+        <span class="part-pill lower">하체 <b>${row.lower}</b></span>
+        <span class="part-pill injury">부상 <b>${injuryItems.length}</b></span>
+      </div>
+      ${injuryHtml}
+      <div class="date-summary-click-title">운동종목 클릭 → 그래프 열기/접기</div>
+      ${itemButtons}
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function makeExerciseTableHTML(name, info) {
+  const type = info.type;
+  const rows = info.rows;
+  let thead = '', tbody = '';
+
+  if (type === 'cardio') {
+    const nameL = name.toLowerCase();
+    const isRunning = nameL.includes('running');
+    const isJumpRope = nameL.includes('jump rope') || nameL.includes('ankle');
+
+    if (isRunning) {
+      thead = `<tr><th>차시</th><th>날짜</th><th>시간(분)</th><th>속도</th></tr>`;
+      tbody = rows.map(r => `<tr><td>${r.nth}</td><td>${r.date||'-'}</td><td>${r.t||'-'}</td><td>${r.spd||'-'}</td></tr>`).join('');
+    } else if (isJumpRope) {
+      thead = `<tr><th>차시</th><th>날짜</th><th>시간(분)</th><th>횟수</th></tr>`;
+      tbody = rows.map(r => `<tr><td>${r.nth}</td><td>${r.date||'-'}</td><td>${r.t||'-'}</td><td>${r.cnt||'-'}</td></tr>`).join('');
+    } else {
+      thead = `<tr><th>차시</th><th>날짜</th><th>시간(분)</th><th>저항</th></tr>`;
+      tbody = rows.map(r => `<tr><td>${r.nth}</td><td>${r.date||'-'}</td><td>${r.t||'-'}</td><td>${r.res||'-'}</td></tr>`).join('');
+    }
+  } else {
+    thead = `<tr><th>차시</th><th>날짜</th><th>세트</th><th>횟수</th><th>무게(kg)</th></tr>`;
+    tbody = rows.map(r => `<tr><td>${r.nth}</td><td>${r.date||'-'}</td><td>${r.s||'-'}</td><td>${r.rep||'-'}</td><td>${r.w||'-'}</td></tr>`).join('');
+  }
+
+  return `<table class="ex-table"><thead>${thead}</thead><tbody>${tbody}</tbody></table>`;
+}
+
+function makeExerciseCardHTML(name, info, selectedDate) {
+  const type = info.type;
+  const displayType = type === 'upper' && isCoreExerciseName(name) ? 'core' : type;
+  const badgeCls = displayType === 'cardio' ? 'badge-cardio' : displayType === 'lower' ? 'badge-lower' : displayType === 'core' ? 'badge-core' : 'badge-upper';
+  const badgeLabel = getTypeLabel(displayType);
+  const rows = info.rows;
+
+  const feelsHTML = rows.some(r => r.feel)
+    ? `<div class="selected-feel-title">${escapeHtml(name)} 날짜별 느낀점</div>
+       <div class="ex-feels">${rows.filter(r=>r.feel).map(r=>`
+         <div class="ex-feel-item ${r.date === selectedDate ? 'selected-date' : ''}">
+           <span class="ex-feel-nth">${formatShortDate(r.date || '')}</span>
+           <span class="ex-feel-text">${escapeHtml(r.feel)}</span>
+         </div>`).join('')}</div>`
+    : `<div class="selected-feel-title muted">기록된 느낀점 없음</div>`;
+
+  return `<div class="selected-exercise-panel-card ex-card">
+    <div class="ex-card-head">
+      <span class="ex-card-badge ${badgeCls}">${badgeLabel}</span>
+      <span class="ex-card-name">${escapeHtml(name)}</span>
+      <span class="selected-date-label">${formatShortDate(selectedDate)} 선택</span>
+      <button type="button" class="collapse-ex-btn" onclick="toggleExercisePanel(${toJsString(selectedDate)}, ${toJsString(name)})">접기 ✕</button>
+    </div>
+    <div class="ex-card-body">
+      <div class="selected-guide">선택한 날짜의 운동종목을 기준으로, 해당 종목의 누적 변화 그래프를 표시합니다.</div>
+      ${makeExerciseTableHTML(name, info)}
+      <div class="ex-chart-wrap"><canvas id="selectedExerciseChart"></canvas></div>
+      ${feelsHTML}
+    </div>
+  </div>`;
+}
+
+function renderSelectedExerciseChart(name, info) {
+  const el = document.getElementById('selectedExerciseChart');
+  if (!el) return;
+
+  if (exCharts.selectedExercise) {
+    exCharts.selectedExercise.destroy();
+    delete exCharts.selectedExercise;
+  }
+
+  const rows = info.rows;
+  const labels = rows.map(r => formatShortDate(r.date || r.nth || ''));
+  const type = info.type;
+  let datasets = [];
+  let scalesOpt = {};
+
+  if (type === 'cardio') {
+    const nameL = name.toLowerCase();
+    const isRunning = nameL.includes('running');
+    const isJumpRope = nameL.includes('jump rope') || nameL.includes('ankle');
+    const hasT = rows.some(r => Number(r.t) > 0);
+    const hasRes = rows.some(r => Number(r.res) > 0);
+    const hasSpd = rows.some(r => Number(r.spd) > 0);
+    const hasCnt = rows.some(r => Number(r.cnt) > 0);
+
+    if (hasT) datasets.push({
+      label:'시간(분)', data: rows.map(r => Number(r.t)||0),
+      borderColor: teal, backgroundColor:'rgba(6,182,212,0.18)',
+      tension:0.3, pointRadius:5, fill:true, yAxisID:'y'
+    });
+
+    if (isRunning && hasSpd) {
+      datasets.push({ label:'속도', data:rows.map(r=>Number(r.spd)||0), borderColor:purple, backgroundColor:'transparent', tension:0.3, pointRadius:4, borderDash:[2,2], yAxisID:'y2' });
+    } else if (isJumpRope && hasCnt) {
+      datasets.push({ label:'횟수', data:rows.map(r=>Number(r.cnt)||0), borderColor:coral, backgroundColor:'transparent', tension:0.3, pointRadius:4, borderDash:[5,3], yAxisID:'y2' });
+    } else if (hasRes) {
+      datasets.push({ label:'저항', data:rows.map(r=>Number(r.res)||0), borderColor:coral, backgroundColor:'transparent', tension:0.3, pointRadius:4, borderDash:[5,3], yAxisID:'y2' });
+    }
+
+    const y2Color = isRunning ? purple : coral;
+    scalesOpt = {
+      x:{ ticks:{color:'#cbd5e1',font:{size:10}}, grid:{color:'rgba(255,255,255,0.08)'} },
+      y:{ position:'left', ticks:{color:teal,font:{size:10}}, grid:{color:'rgba(255,255,255,0.08)'}, min:0 },
+      y2:{ position:'right', ticks:{color:y2Color,font:{size:10}}, grid:{display:false}, min:0 }
+    };
+  } else {
+    const hasW = rows.some(r => Number(r.w) > 0);
+    const hasRep = rows.some(r => Number(r.rep) > 0);
+    const hasS = rows.some(r => Number(r.s) > 0);
+
+    if (hasW) datasets.push({
+      label:'무게(kg)', data:rows.map(r=>Number(r.w)||0),
+      borderColor:purple, backgroundColor:'rgba(168,85,247,0.18)',
+      tension:0.3, pointRadius:5, fill:true, yAxisID:'y'
+    });
+
+    if (hasRep) datasets.push({
+      label:'횟수', data:rows.map(r=>Number(r.rep)||0),
+      borderColor:teal, backgroundColor:hasW ? 'transparent' : 'rgba(6,182,212,0.18)',
+      tension:0.3, pointRadius:4, fill:!hasW,
+      borderDash:hasW ? [4,3] : [], yAxisID:hasW ? 'y2' : 'y'
+    });
+
+    if (hasS) datasets.push({
+      label:'세트', data:rows.map(r=>Number(r.s)||0),
+      borderColor:coral, backgroundColor:'transparent',
+      tension:0.3, pointRadius:4, borderDash:[2,2],
+      yAxisID:(hasW || hasRep) ? 'y2' : 'y'
+    });
+
+    const useY2 = hasW && (hasRep || hasS);
+    scalesOpt = {
+      x:{ ticks:{color:'#cbd5e1',font:{size:10}}, grid:{color:'rgba(255,255,255,0.08)'} },
+      y:{ position:'left', ticks:{color:'#cbd5e1',font:{size:10}}, grid:{color:'rgba(255,255,255,0.08)'}, min:0 },
+      ...(useY2 ? { y2:{ position:'right', ticks:{color:coral,font:{size:10}}, grid:{display:false}, min:0 } } : {})
+    };
+  }
+
+  if (datasets.length === 0) {
+    el.parentElement.innerHTML = '<div class="empty-selected-chart">강도 데이터 없음</div>';
+    return;
+  }
+
+  exCharts.selectedExercise = new Chart(el, {
+    type:'line',
+    data:{ labels, datasets },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{
+        legend:{
+          display:datasets.length > 1,
+          position:'top',
+          labels:{font:{size:10}, boxWidth:10, padding:8, color:'#e5e7eb'}
+        }
+      },
+      scales:scalesOpt
+    }
+  });
+}
+
+function setActiveExerciseChip(date, name) {
+  document.querySelectorAll('.date-exercise-chip').forEach(btn => {
+    const active = btn.dataset.date === date && btn.dataset.exercise === name;
+    btn.classList.toggle('active', active);
+  });
+}
+
+function toggleExercisePanel(date, name) {
+  if (!selectedStu) return;
+  const panel = document.getElementById('selectedExercisePanel');
+  if (!panel) return;
+
+  const key = date + '|' + name;
+  if (selectedDetailKey === key) {
+    if (exCharts.selectedExercise) {
+      exCharts.selectedExercise.destroy();
+      delete exCharts.selectedExercise;
+    }
+    selectedDetailKey = '';
+    panel.innerHTML = '<div class="exercise-log-guide">날짜 카드 안의 운동종목을 클릭하면 누적 그래프가 열립니다.</div>';
+    setActiveExerciseChip('', '');
+    return;
+  }
+
+  Object.values(exCharts).forEach(c => c.destroy());
+  exCharts = {};
+  selectedDetailKey = key;
+  setActiveExerciseChip(date, name);
+
+  const exMap = buildExerciseMap(selectedStu.records);
+  const info = exMap[name];
+  if (!info) {
+    panel.innerHTML = '<div class="date-summary-empty">선택한 운동종목 기록을 찾을 수 없습니다.</div>';
+    return;
+  }
+
+  panel.innerHTML = makeExerciseCardHTML(name, info, date);
+  renderSelectedExerciseChart(name, info);
+  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+
+function medalForRank(rank) {
+  const r = Number(rank || 0);
+  return r === 1 ? '🥇' : r === 2 ? '🥈' : r === 3 ? '🥉' : '🏅';
+}
+
+function getStudentTopRanksForDashboard(student) {
+  const serverRanks = normalizeTopRanks(student && student.topRanks);
+  const clientRanks = buildClientTopRanksForStudent(student);
+
+  // GAS가 topRanks를 못 내려보내도 화면에서 전체 학생 기록 기준으로 직접 계산한다.
+  const merged = {};
+  serverRanks.concat(clientRanks).forEach(r => {
+    const key = String(r.name || '').trim();
+    if(!key) return;
+    if(!merged[key] || Number(r.rank) < Number(merged[key].rank)) merged[key] = r;
+  });
+
+  return Object.values(merged)
+    .filter(x => Number(x.rank) >= 1 && Number(x.rank) <= 3)
+    .sort((a,b) => Number(a.rank)-Number(b.rank) || String(a.name).localeCompare(String(b.name),'ko'));
+}
+
+function studentKeyForDashboard(student) {
+  return `${String(student && (student.class || student.classLabel) || '').replace(/[^0-9]/g,'')}-${String(student && (student.no || student.studentNo) || '').replace(/[^0-9]/g,'')}`;
+}
+
+function rankMetricForExerciseInfo(info) {
+  const type = info && info.type;
+  let unit = type === 'cardio' ? '분' : '회';
+  const total = (info && Array.isArray(info.rows) ? info.rows : []).reduce((sum, r) => {
+    if (type === 'cardio') {
+      return sum + Number(r.t || r.time || r.min || 0);
+    }
+    const sets = Number(r.s || r.sets || 0);
+    const reps = Number(r.rep || r.reps || 0);
+    if (sets && reps) return sum + sets * reps;
+    return sum + reps;
+  }, 0);
+  return {total, unit};
+}
+
+function buildClientTopRanksForStudent(targetStudent) {
+  if (!targetStudent || !Array.isArray(ALL_STUDENTS)) return [];
+  const targetKey = studentKeyForDashboard(targetStudent);
+  const byExercise = {};
+
+  ALL_STUDENTS.forEach(stu => {
+    const sk = studentKeyForDashboard(stu);
+    if(!sk) return;
+    const exMap = buildExerciseMap(getExerciseRecords(stu.records || []));
+    Object.entries(exMap).forEach(([name, info]) => {
+      const metric = rankMetricForExerciseInfo(info);
+      if (!metric.total) return;
+      const exKey = String(name || '').trim();
+      if (!exKey) return;
+      if (!byExercise[exKey]) byExercise[exKey] = {unit: metric.unit, totals:{}};
+      byExercise[exKey].totals[sk] = (byExercise[exKey].totals[sk] || 0) + metric.total;
+    });
+  });
+
+  const result = [];
+  Object.entries(byExercise).forEach(([name, info]) => {
+    const sorted = Object.entries(info.totals)
+      .filter(([,total]) => Number(total || 0) > 0)
+      .sort((a,b) => Number(b[1])-Number(a[1]) || String(a[0]).localeCompare(String(b[0])));
+
+    let prev = null;
+    let rank = 0;
+    sorted.forEach(([sk, total], idx) => {
+      if (prev === null || Number(total) !== Number(prev)) {
+        rank = idx + 1;
+        prev = Number(total);
+      }
+      if (sk === targetKey && rank >= 1 && rank <= 3) {
+        result.push({name, rank, total, unit: info.unit || ''});
+      }
+    });
+  });
+
+  return result.sort((a,b)=>Number(a.rank)-Number(b.rank) || String(a.name).localeCompare(String(b.name),'ko'));
+}
+
+function medalForRank(rank) {
+  const r = Number(rank);
+  if (r === 1) return '🥇';
+  if (r === 2) return '🥈';
+  if (r === 3) return '🥉';
+  return '🏅';
+}
+
+function formatRankTotal(r) {
+  const total = Number(r && r.total || 0);
+  if (!total) return '';
+  const clean = Number.isInteger(total) ? String(total) : String(Math.round(total * 10) / 10);
+  return `누적 ${clean}${r.unit || ''}`;
+}
+
+
+function renderStudentRankMiniV62(student) {
+  const ranks = getStudentTopRanksForDashboard(student).slice(0, 3);
+  if (!ranks.length) return '<div class="stu-ranks"></div>';
+  return `<div class="stu-ranks">${ranks.map(r => `
+    <span class="stu-rank-mini rank-${Number(r.rank)}" title="${escapeHtml(r.name)} 전교 ${Number(r.rank)}등">
+      ${medalForRank(r.rank)} 전교 ${Number(r.rank)}등
+    </span>`).join('')}</div>`;
+}
+
+function renderDetailRankBadges(student) {
+  const el = document.getElementById('detailRankBadges');
+  if (!el) return;
+
+  const ranks = getStudentTopRanksForDashboard(student);
+
+  if (!ranks.length) {
+    el.innerHTML = '<div class="detail-top-rank-empty">전교 1~3등 기록 없음</div>';
+    return;
+  }
+
+  el.innerHTML = `<div class="detail-top-rank-linebox">${ranks.map(r => `
+    <div class="detail-top-rank-line rank-${Number(r.rank)}">
+      <span>${medalForRank(r.rank)}</span>
+      <span>전교 ${Number(r.rank)}등 -</span>
+      <span class="rank-ex-name">${escapeHtml(r.name)}</span>
+      <span class="rank-total-small">${escapeHtml(formatRankTotal(r))}</span>
+    </div>`).join('')}</div>`;
+}
+
+function selectStudent(idx) {
+  const list = getFiltered();
+  const s = list[idx];
+  selectedStu = s;
+  selectedDetailKey = '';
+
+  document.querySelectorAll('.stu-card').forEach((c,i) => c.classList.toggle('selected', i===idx));
+  const panel = document.getElementById('detailPanel');
+  panel.classList.add('show');
+
+  const nameEl = document.getElementById('detailName');
+  nameEl.textContent = `${s.class} ${s.no} ${cleanDashboardStudentName(s.name)}`;
+
+  // v64: 실제 렌더링된 상세 제목 바로 아래에 TOP3 영역을 강제 고정한다.
+  let rankBox = document.getElementById('detailRankBadges');
+  if (!rankBox) {
+    nameEl.insertAdjacentHTML('afterend', '<div id="detailRankBadges" class="detail-rank-badges"></div>');
+    rankBox = document.getElementById('detailRankBadges');
+  }
+  if (rankBox.previousElementSibling !== nameEl) {
+    nameEl.insertAdjacentElement('afterend', rankBox);
+  }
+  renderDetailRankBadges(s);
+
+  Object.values(exCharts).forEach(c => c.destroy());
+  exCharts = {};
+
+  const dateSummaryEl = document.getElementById('dateSummary');
+  if (dateSummaryEl) dateSummaryEl.innerHTML = renderDateBodySummary(s.records);
+
+  const exerciseLogEl = document.getElementById('exerciseLog');
+  if (s.records.length === 0) {
+    exerciseLogEl.innerHTML = '<div class="date-summary-empty">제출 기록 없음</div>';
+    panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+    return;
+  }
+
+  exerciseLogEl.innerHTML = '<div id="selectedExercisePanel"><div class="exercise-log-guide">날짜 카드 안의 운동종목을 클릭하면 누적 그래프가 열립니다.</div></div>';
+  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function closeDetail() {
+  document.getElementById('detailPanel').classList.remove('show');
+  document.querySelectorAll('.stu-card').forEach(c => c.classList.remove('selected'));
+  Object.values(exCharts).forEach(c => c.destroy());
+  exCharts = {};
+  selectedStu = null;
+  const rankEl = document.getElementById('detailRankBadges');
+  if(rankEl) rankEl.innerHTML = '';
+  selectedDetailKey = '';
+}
+
+function printStudent() {
+  if (!selectedStu) return;
+  const s = selectedStu;
+  const exMap = buildExerciseMap(s.records);
+
+  const exRows = Object.entries(exMap).map(([name, info]) => {
+    const type = info.type;
+    const badgeColor = type==='cardio'?'#0f6e56':type==='lower'?'#712B13':'#3C3489';
+    const badgeBg    = type==='cardio'?'#d4f0e6':type==='lower'?'#FAECE7':'#EEEDFE';
+    const badgeLabel = type==='cardio'?'유산소':type==='lower'?'하체':'상체·코어';
+
+    let thead = '', tbody = '';
+    if (type === 'cardio') {
+      const nameL3 = name.toLowerCase();
+      const isRunning3  = nameL3.includes('running');
+      const isJumpRope3 = nameL3.includes('jump rope') || nameL3.includes('ankle');
+      if (isRunning3) {
+        thead = `<tr><th>차시</th><th>날짜</th><th>시간(분)</th><th>속도</th><th>느낀점</th></tr>`;
+        tbody = info.rows.map(r=>`<tr><td>${r.nth}</td><td>${r.date||'-'}</td><td>${r.t||'-'}</td><td>${r.spd||'-'}</td><td style="color:#534AB7;">${r.feel||'-'}</td></tr>`).join('');
+      } else if (isJumpRope3) {
+        thead = `<tr><th>차시</th><th>날짜</th><th>시간(분)</th><th>횟수</th><th>느낀점</th></tr>`;
+        tbody = info.rows.map(r=>`<tr><td>${r.nth}</td><td>${r.date||'-'}</td><td>${r.t||'-'}</td><td>${r.cnt||'-'}</td><td style="color:#534AB7;">${r.feel||'-'}</td></tr>`).join('');
+      } else {
+        thead = `<tr><th>차시</th><th>날짜</th><th>시간(분)</th><th>저항</th><th>느낀점</th></tr>`;
+        tbody = info.rows.map(r=>`<tr><td>${r.nth}</td><td>${r.date||'-'}</td><td>${r.t||'-'}</td><td>${r.res||'-'}</td><td style="color:#534AB7;">${r.feel||'-'}</td></tr>`).join('');
+      }
+    } else {
+      thead = `<tr><th>차시</th><th>날짜</th><th>세트</th><th>횟수</th><th>무게(kg)</th><th>느낀점</th></tr>`;
+      tbody = info.rows.map(r=>`<tr><td>${r.nth}</td><td>${r.date||'-'}</td><td>${r.s||'-'}</td><td>${r.rep||'-'}</td><td>${r.w||'-'}</td><td style="color:#534AB7;">${r.feel||'-'}</td></tr>`).join('');
+    }
+
+    return `<div style="margin-bottom:18px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="font-size:10px;font-weight:400;padding:2px 8px;border-radius:999px;background:${badgeBg};color:${badgeColor};">${badgeLabel}</span>
+        <span style="font-size:13px;font-weight:500;">${name}</span>
+      </div>
+      <table><thead>${thead}</thead><tbody>${tbody}</tbody></table>
+    </div>`;
+  }).join('');
+
+  const win = window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${s.class} ${s.no} ${s.name}</title>
+  <style>
+    @page{size:A4;margin:20mm;}
+    body{font-family:sans-serif;font-size:13px;color:#222;}
+    h1{font-size:18px;margin-bottom:4px;}
+    .sub{color:#666;font-size:12px;margin-bottom:20px;}
+    table{width:100%;border-collapse:collapse;margin-top:6px;}
+    th{background:#534AB7;color:#fff;padding:7px 8px;font-size:11px;text-align:left;}
+    td{padding:7px 8px;border-bottom:1px solid #eee;font-size:11px;}
+    .footer{margin-top:30px;font-size:11px;color:#aaa;border-top:1px solid #eee;padding-top:10px;}
+  </style>
+
+
+<style id="dashboard-v67-injury-fix-style">
+/* ===== V67 부상 집계/표시 수정 ===== */
+.dashboard-four-charts{
+  display:grid!important;
+  grid-template-columns:.9fr 1.05fr 1.05fr 1.05fr!important;
+  gap:14px!important;
+  align-items:stretch!important;
+}
+.class-card-btns{gap:8px!important;}
+.class-stat-btn.injury-stat-btn .stat-val{color:#f87171!important;}
+.class-stat-btn.injury-stat-btn:hover,
+.class-stat-btn.injury-stat-btn.active{border-color:#f87171!important;background:#2a1720!important;}
+.injury-card .card-title{color:#fecaca!important;}
+.injury-roster-item{align-items:flex-start!important;}
+.injury-roster-main{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.injury-roster-name{color:#e5e7eb;font-weight:600;white-space:normal;word-break:keep-all;}
+.injury-roster-reason{color:#fca5a5;font-size:11.5px;line-height:1.35;word-break:keep-all;}
+.injury-count-badge{color:#fecaca!important;background:#450a0a!important;border:1px solid #7f1d1d!important;}
+.date-summary-card.has-injury{border-color:#7f1d1d!important;box-shadow:0 10px 24px rgba(127,29,29,.26)!important;}
+.part-pill.injury{background:#450a0a;color:#fecaca;border:1px solid #7f1d1d;}
+.date-injury-list{margin-top:12px;border:1px solid #7f1d1d;background:#1b0f13;border-radius:16px;padding:10px;}
+.date-injury-title{font-size:11px;font-weight:700;color:#fecaca;margin-bottom:7px;display:flex;align-items:center;gap:5px;}
+.date-injury-item{display:flex;align-items:flex-start;gap:7px;margin-top:6px;font-size:12px;line-height:1.45;}
+.date-injury-item:first-of-type{margin-top:0;}
+.date-injury-part{flex:0 0 auto;background:#7f1d1d;color:#fee2e2;border-radius:999px;padding:3px 8px;font-size:10.5px;font-weight:700;}
+.date-injury-reason{color:#fca5a5;word-break:keep-all;}
+.date-injury-empty{color:#94a3b8;font-size:11.5px;font-weight:600;}
+@media(max-width:1180px){.dashboard-four-charts{grid-template-columns:1fr!important;}}
+@media(max-width:720px){.class-card-btns{gap:6px!important}.class-stat-btn{padding:10px 5px!important}.class-stat-btn .stat-label{font-size:10px!important}.class-stat-btn .stat-val{font-size:18px!important}.date-injury-item{flex-direction:column;gap:4px;}}
+@media print{.date-injury-list{border-color:#ddd!important;background:#fff!important}.date-injury-title,.date-injury-reason{color:#222!important}.date-injury-part{background:#eee!important;color:#111!important}}
+</style>
+
+
+<style id="v69-class-card-filter-style">
+/* v69: 상단 탭 삭제 + 반별 카드 클릭 필터 */
+#tabs,.tabs{display:none!important;}
+.class-card{cursor:pointer;transition:transform .16s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease;}
+.class-card:hover{transform:translateY(-2px);border-color:#fb923c!important;box-shadow:0 12px 26px rgba(249,115,22,.18)!important;}
+.class-card.selected-class{border-color:#fb923c!important;box-shadow:0 0 0 3px rgba(251,146,60,.20),0 14px 30px rgba(249,115,22,.22)!important;background:linear-gradient(180deg,#172232 0%,#101821 100%)!important;}
+.class-card.selected-class .class-card-title::after{content:"선택됨";margin-left:8px;padding:3px 8px;border-radius:999px;background:#fb923c;color:#fff;font-size:10px;font-weight:700;vertical-align:middle;}
+.class-stat-btn{cursor:pointer;}
+</style>
+
+</head><body>
+  <h1>창원예술학교 체육 수업 — 운동 누적 기록</h1>
+  <div class="sub">${s.class} ${s.no} ${s.name} &nbsp;|&nbsp; 제출 ${s.records.length}/${ALL_NTHS.length}차시</div>
+  ${exRows}
+  <div class="footer">출력일: ${new Date().toLocaleDateString('ko-KR')} &nbsp;|&nbsp; 창원예술학교 체육과</div>
+  </body></html>`);
+  win.document.close();
+  win.print();
+}
+
+
+/* ===== 대시보드 연동 안정화 최종 패치 =====
+   - 전체(all) 한 번 호출 대신 1~4반을 각각 호출해 합침
+   - JSONP 실패 시 fetch로 한 번 더 확인
+   - 헬스 플래너 조회와 같은 방식으로 Apps Script 응답을 읽음
+*/
+function dashboardRequestClass(classLabel){
+  return new Promise((resolve, reject) => {
+    const baseUrl = WEB_APP_URL + '?action=getData&class=' + encodeURIComponent(classLabel);
+    const cbName = '_dashClassCb_' + classLabel.replace(/[^0-9A-Za-z가-힣]/g,'') + '_' + Date.now() + '_' + Math.floor(Math.random()*10000);
+    const script = document.createElement('script');
+    let finished = false;
+
+    function cleanup(){
+      delete window[cbName];
+      if(script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    async function fallbackFetch(reason){
+      if(finished) return;
+      try{
+        const res = await fetch(baseUrl + '&callback=', {method:'GET'});
+        const text = await res.text();
+        let data;
+        try{
+          data = JSON.parse(text);
+        }catch(e){
+          const m = text.match(/^[^(]+\((.*)\);?\s*$/s);
+          if(m) data = JSON.parse(m[1]);
+          else throw new Error('응답 형식 오류: ' + text.slice(0,120));
+        }
+        finished = true;
+        clearTimeout(timer);
+        cleanup();
+        resolve(data);
+      }catch(err){
+        finished = true;
+        clearTimeout(timer);
+        cleanup();
+        reject(err || reason || new Error('데이터 요청 실패'));
+      }
+    }
+
+    const timer = setTimeout(() => fallbackFetch(new Error(classLabel + ' 응답 시간 초과')), 8000);
+
+    window[cbName] = function(data){
+      if(finished) return;
+      finished = true;
+      clearTimeout(timer);
+      cleanup();
+      resolve(data);
+    };
+
+    script.onerror = function(){
+      fallbackFetch(new Error(classLabel + ' JSONP 로드 실패'));
+    };
+
+    script.src = baseUrl + '&callback=' + cbName;
+    document.body.appendChild(script);
+  });
+}
+
+async function loadData(){
+  document.getElementById('mainContent').innerHTML = '<div class="loading"><i class="ti ti-loader"></i> 데이터 불러오는 중...</div>';
+
+  try{
+    const classLabels = ['1반','2반','3반','4반','5반'];
+    const results = await Promise.allSettled(classLabels.map(c => dashboardRequestClass(c)));
+    const students = [];
+    const errors = [];
+
+    results.forEach((r, idx) => {
+      if(r.status === 'fulfilled' && r.value && r.value.ok){
+        students.push(...(r.value.students || []));
+      }else if(r.status === 'fulfilled' && r.value && !r.value.ok){
+        errors.push(classLabels[idx] + ': ' + (r.value.error || '서버 오류'));
+      }else{
+        errors.push(classLabels[idx] + ': ' + (r.reason && r.reason.message ? r.reason.message : '요청 실패'));
+      }
+    });
+
+    if(students.length === 0 && errors.length){
+      throw new Error(errors.join(' / '));
+    }
+
+    ALL_STUDENTS = normalizeDashboardData(students);
+    renderMain();
+
+  }catch(err){
+    console.error('dashboard load failed:', err);
+    document.getElementById('mainContent').innerHTML = `<div class="error"><i class="ti ti-alert-circle"></i> 데이터 불러오기 실패<br><div style="font-size:11px;color:#888;margin-top:8px;line-height:1.5;">${String(err.message || err)}</div><br><button class="reload-btn" onclick="loadData()" style="margin:0 auto;">다시 시도</button></div>`;
+  }
+}
+
+loadData();
+</script>
+
+
+
+
+<style id="v70-bright-dashboard-theme">
+/* v70: 대시보드 색상 밝게 보정 */
+:root{
+  --purple:#A855F7!important;
+  --teal:#06B6D4!important;
+  --coral:#FB923C!important;
+  --red:#FB7185!important;
+  --orange:#F97316!important;
+  --orange-deep:#EA580C!important;
+}
+body{
+  background:
+    radial-gradient(circle at 7% 0%, rgba(14,165,233,.22), transparent 28%),
+    radial-gradient(circle at 92% 4%, rgba(168,85,247,.18), transparent 30%),
+    linear-gradient(180deg,#07111f 0%, #0b1320 45%, #0f172a 100%)!important;
+}
+.topbar,
+.card,
+.card-full,
+.detail-panel,
+.metric,
+.stu-card,
+.class-card{
+  border-color:#334b68!important;
+}
+.card,.card-full,.detail-panel,.metric,.stu-card{
+  background:linear-gradient(180deg,#111c2d 0%,#0c1624 100%)!important;
+  box-shadow:0 14px 30px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.035)!important;
+}
+.class-card{
+  background:linear-gradient(180deg,#142033 0%,#0d1828 100%)!important;
+  box-shadow:0 12px 28px rgba(6,182,212,.10)!important;
+}
+.class-card::before{
+  height:5px!important;
+  background:linear-gradient(90deg,#06b6d4,#a855f7,#fb923c)!important;
+}
+.class-card:hover,
+.class-card.selected-class{
+  border-color:#38bdf8!important;
+  box-shadow:0 0 0 3px rgba(56,189,248,.18),0 16px 34px rgba(6,182,212,.18)!important;
+}
+.class-card.selected-class .class-card-title::after{
+  background:linear-gradient(135deg,#06b6d4,#a855f7)!important;
+}
+.class-stat-btn{
+  background:#17243a!important;
+  border-color:#3a5270!important;
+}
+.class-stat-btn:hover,.class-stat-btn.active{
+  background:#1b2b45!important;
+  border-color:#38bdf8!important;
+}
+.class-stat-btn.submit-btn .stat-val{color:#34d399!important;}
+.class-stat-btn.rest-btn .stat-val{color:#facc15!important;}
+.class-stat-btn.injury-stat-btn .stat-val{color:#fb7185!important;}
+.class-stat-btn.injury-stat-btn:hover,
+.class-stat-btn.injury-stat-btn.active{background:#342034!important;border-color:#fb7185!important;}
+.legend i[style*="#534AB7"], .legend i[style*="rgb(83, 74, 183)"]{background:#a855f7!important;}
+.legend i[style*="#1D9E75"], .legend i[style*="rgb(29, 158, 117)"]{background:#06b6d4!important;}
+.legend i[style*="#D85A30"], .legend i[style*="rgb(216, 90, 48)"]{background:#fb923c!important;}
+.metric::before{background:linear-gradient(90deg,#06b6d4,#67e8f9)!important;}
+.metric:nth-child(2)::before{background:linear-gradient(90deg,#facc15,#fde68a)!important;}
+.metric:nth-child(3)::before{background:linear-gradient(90deg,#fb7185,#fda4af)!important;}
+.metric:nth-child(4)::before{background:linear-gradient(90deg,#a855f7,#c4b5fd)!important;}
+.cnt-ok{background:#063f46!important;color:#67e8f9!important;}
+.cnt-warn{background:#45380a!important;color:#fde68a!important;}
+.cnt-no{background:#4a1726!important;color:#fda4af!important;}
+.part-pill{box-shadow:inset 0 1px 0 rgba(255,255,255,.20),0 6px 14px rgba(0,0,0,.14)!important;}
+.part-pill.cardio{background:linear-gradient(90deg,#0891b2,#06b6d4)!important;color:#ecfeff!important;}
+.part-pill.upper{background:linear-gradient(90deg,#7c3aed,#a855f7)!important;color:#faf5ff!important;}
+.part-pill.core{background:linear-gradient(90deg,#ca8a04,#facc15)!important;color:#111827!important;}
+.part-pill.lower{background:linear-gradient(90deg,#ea580c,#fb923c)!important;color:#fff7ed!important;}
+.part-pill.injury{background:linear-gradient(90deg,#e11d48,#fb7185)!important;color:#fff1f2!important;border-color:#fda4af!important;}
+.date-summary-card{
+  border-color:#385372!important;
+  background:linear-gradient(180deg,#132238 0%,#0d1828 100%)!important;
+}
+.date-summary-card.has-injury{
+  border-color:#fb7185!important;
+  box-shadow:0 0 0 2px rgba(251,113,133,.12),0 14px 30px rgba(251,113,133,.12)!important;
+}
+.date-injury-list{
+  border-color:#fb7185!important;
+  background:linear-gradient(180deg,rgba(251,113,133,.16),rgba(168,85,247,.10))!important;
+}
+.date-injury-title{color:#fecdd3!important;}
+.date-injury-part{background:#fb7185!important;color:#fff!important;}
+.date-injury-reason{color:#ffe4e6!important;}
+.injury-card .card-title{color:#fecdd3!important;}
+.injury-count-badge{background:#fb7185!important;color:#fff!important;border-color:#fda4af!important;}
+.injury-roster-reason{color:#fecdd3!important;}
+.badge-cardio{background:#083f4b!important;color:#67e8f9!important;}
+.badge-upper{background:#341a63!important;color:#e9d5ff!important;}
+.badge-core{background:#45380a!important;color:#fde68a!important;}
+.badge-lower{background:#4a260d!important;color:#fed7aa!important;}
+.ex-card{background:#0e1929!important;border-color:#385372!important;}
+.ex-card-head{background:linear-gradient(90deg,#17243a,#111c2d)!important;border-bottom-color:#334b68!important;}
+.ex-chart-wrap{background:#07111f!important;border-color:#334b68!important;}
+.roster-panel{border-color:#385372!important;background:#0d1828!important;color:#dbeafe!important;}
+.empty-date-chart{border-color:#385372!important;background:#0d1828!important;color:#bfdbfe!important;}
+</style>
+<script id="v70-bright-chart-refresh">
+(function(){
+  function repaintDashboardCharts(){
+    try{
+      if (typeof renderMain === 'function' && Array.isArray(window.ALL_STUDENTS)) {
+        renderMain();
+      }
+    }catch(e){ console.warn('대시보드 색상 재적용 실패', e); }
+  }
+  window.addEventListener('load', function(){ setTimeout(repaintDashboardCharts, 120); });
+})();
+</script>
+
+
+<style id="v71-class-submission-rank-style">
+/* v71: 교사용 대시보드 반별 제출 순위 패널 */
+.dashboard-class-rank-panel{
+  margin:0 0 18px 0 !important;
+  padding:18px 18px 16px !important;
+  border-radius:22px !important;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(56,189,248,.18), transparent 34%),
+    linear-gradient(180deg,#142033 0%,#0d1828 100%) !important;
+  border:1.8px solid #334b68 !important;
+  box-shadow:0 14px 30px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+.dashboard-class-rank-title{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:12px !important;
+  margin-bottom:13px !important;
+  color:#f8fafc !important;
+  font-size:18px !important;
+  font-weight:700 !important;
+  letter-spacing:-.03em !important;
+}
+.dashboard-class-rank-note{
+  color:#fbbf24 !important;
+  font-size:12px !important;
+  font-weight:600 !important;
+  background:rgba(251,191,36,.10) !important;
+  border:1px solid rgba(251,191,36,.22) !important;
+  border-radius:999px !important;
+  padding:5px 10px !important;
+  white-space:nowrap !important;
+}
+.dashboard-class-rank-grid{
+  display:grid !important;
+  grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+  gap:10px !important;
+}
+.dashboard-class-rank-item{
+  min-height:72px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:10px !important;
+  padding:13px 14px !important;
+  border-radius:18px !important;
+  background:linear-gradient(180deg,#17243a 0%,#101a2b 100%) !important;
+  border:1.5px solid #314762 !important;
+  box-shadow:0 8px 18px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+.dashboard-class-rank-item.top1{
+  background:linear-gradient(135deg,#3a2b08 0%,#17243a 62%,#111827 100%) !important;
+  border-color:#facc15 !important;
+  box-shadow:0 0 0 2px rgba(250,204,21,.12),0 12px 26px rgba(250,204,21,.12), inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+.dashboard-class-rank-left{
+  display:flex !important;
+  align-items:center !important;
+  gap:9px !important;
+  min-width:0 !important;
+}
+.dashboard-rank-medal{
+  flex:0 0 auto !important;
+  font-size:24px !important;
+  filter:drop-shadow(0 3px 7px rgba(0,0,0,.25)) !important;
+}
+.dashboard-rank-class{
+  color:#eaf2ff !important;
+  font-size:15px !important;
+  font-weight:700 !important;
+  white-space:nowrap !important;
+}
+.dashboard-class-rank-item.top1 .dashboard-rank-class{
+  color:#fff7cc !important;
+}
+.dashboard-rank-count{
+  color:#38bdf8 !important;
+  font-size:13px !important;
+  font-weight:700 !important;
+  white-space:nowrap !important;
+  background:rgba(56,189,248,.10) !important;
+  border:1px solid rgba(56,189,248,.20) !important;
+  border-radius:999px !important;
+  padding:6px 10px !important;
+}
+.dashboard-class-rank-item.top1 .dashboard-rank-count{
+  color:#fbbf24 !important;
+  background:rgba(251,191,36,.13) !important;
+  border-color:rgba(251,191,36,.28) !important;
+}
+@media(max-width:1080px){
+  .dashboard-class-rank-grid{grid-template-columns:repeat(3,minmax(0,1fr)) !important;}
+}
+@media(max-width:720px){
+  .dashboard-class-rank-panel{padding:15px 14px !important;border-radius:20px !important;}
+  .dashboard-class-rank-title{align-items:flex-start !important;flex-direction:column !important;gap:7px !important;font-size:16px !important;}
+  .dashboard-class-rank-grid{grid-template-columns:1fr !important;}
+  .dashboard-class-rank-item{min-height:58px !important;}
+}
+</style>
+<script id="v71-class-submission-rank-script">
+(function(){
+  if(window.__v71DashboardClassRankInstalled) return;
+  window.__v71DashboardClassRankInstalled = true;
+
+  function safe(v){
+    return String(v == null ? '' : v).replace(/[&<>\"]/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c] || c;
+    });
+  }
+  function classNo(cls){
+    return Number(String(cls || '').replace(/[^0-9]/g,'')) || 999;
+  }
+  function medal(rank, hasSubmit){
+    if(!hasSubmit) return '▫️';
+    return rank === 1 ? '🥇' : (rank === 2 ? '🥈' : (rank === 3 ? '🥉' : '🏅'));
+  }
+  function studentKey(s){
+    return [s && (s.class || s.classLabel || ''), s && (s.no || s.studentNo || ''), s && (s.name || s.studentName || '')].join('|');
+  }
+  function hasExerciseSubmission(s){
+    try{
+      if(typeof getExerciseRecords === 'function'){
+        return getExerciseRecords((s && s.records) || []).length > 0;
+      }
+    }catch(e){}
+    return ((s && s.records) || []).some(function(r){
+      if(!r) return false;
+      if(r.restDay || r.injury || String(r.status || r.상태 || '') === '휴식' || String(r.status || r.상태 || '') === '부상') return false;
+      return ['cardio','upper','lower','core'].some(function(k){ return Array.isArray(r[k]) && r[k].filter(Boolean).length > 0; });
+    });
+  }
+  function buildClassRankRows(){
+    var classLabels = ['1반','2반','3반','4반','5반'];
+    var students = Array.isArray(ALL_STUDENTS) ? ALL_STUDENTS : [];
+    var rows = classLabels.map(function(cls){
+      var seen = {};
+      students.forEach(function(s){
+        if(!s || String(s.class || s.classLabel || '') !== cls) return;
+        if(hasExerciseSubmission(s)) seen[studentKey(s)] = true;
+      });
+      return {classLabel:cls, submittedStudents:Object.keys(seen).length};
+    });
+    rows.sort(function(a,b){
+      var diff = Number(b.submittedStudents || 0) - Number(a.submittedStudents || 0);
+      if(diff) return diff;
+      return classNo(a.classLabel) - classNo(b.classLabel);
+    });
+    var prev = null, rank = 0, rankCounts = {};
+    rows.forEach(function(r,i){
+      var cnt = Number(r.submittedStudents || 0);
+      if(prev === null || cnt !== prev){ rank = i + 1; prev = cnt; }
+      r.rank = rank;
+      r.hasSubmit = cnt > 0;
+      rankCounts[rank] = (rankCounts[rank] || 0) + 1;
+    });
+    rows.forEach(function(r){
+      r.isTie = !!(r.hasSubmit && rankCounts[r.rank] > 1);
+      r.rankLabel = r.hasSubmit ? ((r.isTie ? '공동 ' : '') + r.rank + '등 - ' + r.classLabel) : ('미제출 - ' + r.classLabel);
+    });
+    return rows;
+  }
+  function ensurePanel(){
+    var cards = document.getElementById('classCards');
+    if(!cards) return null;
+    var panel = document.getElementById('dashboardClassSubmitRank');
+    if(!panel){
+      panel = document.createElement('div');
+      panel.id = 'dashboardClassSubmitRank';
+      panel.className = 'dashboard-class-rank-panel';
+    }
+    if(panel.parentNode !== cards.parentNode || panel.nextElementSibling !== cards){
+      cards.parentNode.insertBefore(panel, cards);
+    }
+    return panel;
+  }
+  var lastHtml = '';
+  function renderClassRankPanel(){
+    var panel = ensurePanel();
+    if(!panel) return;
+    var rows = buildClassRankRows();
+    var html = '<div class="dashboard-class-rank-title"><span>🏆 반별 제출 순위</span><span class="dashboard-class-rank-note">휴식 제출 제외 · 1명 1회 집계</span></div><div class="dashboard-class-rank-grid">';
+    rows.forEach(function(r){
+      html += '<div class="dashboard-class-rank-item '+(r.rank===1 && r.hasSubmit?'top1':'')+'"><div class="dashboard-class-rank-left"><span class="dashboard-rank-medal">'+medal(r.rank, r.hasSubmit)+'</span><span class="dashboard-rank-class">'+safe(r.rankLabel || (r.rank+'등 - '+r.classLabel))+'</span></div><div class="dashboard-rank-count">누적 '+Number(r.submittedStudents||0)+'명 제출</div></div>';
+    });
+    html += '</div>';
+    if(html !== lastHtml){
+      panel.innerHTML = html;
+      lastHtml = html;
+    }
+  }
+
+  if(typeof renderAll === 'function'){
+    var originalRenderAll = renderAll;
+    renderAll = function(){
+      var result = originalRenderAll.apply(this, arguments);
+      setTimeout(renderClassRankPanel, 0);
+      return result;
+    };
+  }
+  if(typeof renderMain === 'function'){
+    var originalRenderMain = renderMain;
+    renderMain = function(){
+      var result = originalRenderMain.apply(this, arguments);
+      setTimeout(renderClassRankPanel, 0);
+      return result;
+    };
+  }
+  document.addEventListener('DOMContentLoaded', function(){setTimeout(renderClassRankPanel, 300); setTimeout(renderClassRankPanel, 1200);});
+  window.addEventListener('load', function(){setTimeout(renderClassRankPanel, 500); setTimeout(renderClassRankPanel, 1800);});
+  try{
+    new MutationObserver(function(){setTimeout(renderClassRankPanel, 100);}).observe(document.body, {childList:true, subtree:true});
+  }catch(e){}
+})();
+</script>
+
+
+<!-- ===== v74 safe patch: 순위 글씨 + 인기도 스크롤 + 그래프 초기 정렬 ===== -->
+<style id="v74-dashboard-safe-font-scroll-align-fix">
+/* 반별 제출 순위 카드 글씨 겹침 방지 */
+.dashboard-class-rank-title{
+  font-size:16px !important;
+  letter-spacing:-0.045em !important;
+}
+.dashboard-class-rank-note{
+  font-size:11px !important;
+  padding:4px 8px !important;
+}
+.dashboard-class-rank-grid{
+  gap:9px !important;
+}
+.dashboard-class-rank-item{
+  min-height:78px !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  justify-content:center !important;
+  gap:6px !important;
+  padding:11px 12px !important;
+  overflow:hidden !important;
+}
+.dashboard-class-rank-left{
+  width:100% !important;
+  gap:6px !important;
+  min-width:0 !important;
+}
+.dashboard-rank-medal{
+  font-size:19px !important;
+}
+.dashboard-rank-class{
+  min-width:0 !important;
+  max-width:100% !important;
+  font-size:13px !important;
+  line-height:1.15 !important;
+  letter-spacing:-0.055em !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+.dashboard-rank-count{
+  max-width:100% !important;
+  font-size:11px !important;
+  line-height:1.1 !important;
+  padding:4px 7px !important;
+  letter-spacing:-0.055em !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+/* 그래프 카드 내부 글씨 크기 보정 */
+.dashboard-four-charts .card-title{
+  font-size:15px !important;
+  line-height:1.2 !important;
+  letter-spacing:-0.04em !important;
+}
+.dashboard-four-charts .legend{
+  min-height:26px !important;
+  align-items:center !important;
+  gap:8px !important;
+}
+.dashboard-four-charts .legend span{
+  font-size:10.5px !important;
+  line-height:1.15 !important;
+}
+.dashboard-four-charts .scroll-guide{
+  font-size:10px !important;
+  padding:3px 8px !important;
+  white-space:nowrap !important;
+}
+
+/* 운동 종목 인기도도 날짜 그래프처럼 가로 스크롤 */
+.pop-chart-scroll{
+  width:100% !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  padding:4px 2px 10px !important;
+  scroll-snap-type:x proximity !important;
+}
+.pop-chart-scroll::-webkit-scrollbar{height:8px !important;}
+.pop-chart-scroll::-webkit-scrollbar-thumb{background:#fb923c !important;border-radius:999px !important;}
+.pop-chart-scroll::-webkit-scrollbar-track{background:#182231 !important;border-radius:999px !important;}
+.pop-chart-inner{
+  position:relative !important;
+  height:190px !important;
+  min-width:420px !important;
+  border:1px solid #263344 !important;
+  border-radius:16px !important;
+  background:#0b1119 !important;
+  padding:10px !important;
+  box-sizing:border-box !important;
+}
+.empty-pop-chart{
+  min-height:190px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  color:#94a3b8 !important;
+  font-size:13px !important;
+  font-weight:600 !important;
+  background:#0b1119 !important;
+  border:1px dashed #334155 !important;
+  border-radius:16px !important;
+  padding:18px !important;
+  text-align:center !important;
+}
+
+@media(max-width:1180px){
+  .dashboard-class-rank-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  }
+}
+@media(max-width:720px){
+  .dashboard-class-rank-grid{
+    grid-template-columns:1fr !important;
+  }
+  .dashboard-class-rank-item{
+    min-height:60px !important;
+    flex-direction:row !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+  }
+  .dashboard-rank-class{font-size:13px !important;}
+  .dashboard-rank-count{font-size:11px !important;}
+}
+</style>
+
+<script id="v74-dashboard-safe-chart-scroll-align-fix">
+(function(){
+  if(window.__v74DashboardChartFixInstalled) return;
+  window.__v74DashboardChartFixInstalled = true;
+
+  function resetScroll(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    var run = function(){ try{ el.scrollLeft = 0; }catch(e){} };
+    run();
+    requestAnimationFrame(run);
+    setTimeout(run, 80);
+    setTimeout(run, 250);
+  }
+
+  function resetAllGraphScroll(){
+    ['popChartScroll','dateChartScroll','restChartScroll','injuryChartScroll'].forEach(resetScroll);
+  }
+
+  function makeDateCanvas(kind, sorted){
+    var cfg = {
+      rest:   {inner:'restChartInner',   scroll:'restChartScroll',   canvas:'chartRestDate',   empty:'날짜별 휴식 기록 없음', aria:'날짜별 휴식일 건수'},
+      injury: {inner:'injuryChartInner', scroll:'injuryChartScroll', canvas:'chartInjuryDate', empty:'날짜별 부상 기록 없음', aria:'날짜별 부상 학생 수'},
+      submit: {inner:'dateChartInner',   scroll:'dateChartScroll',   canvas:'chartDate',       empty:'날짜별 제출 기록 없음', aria:'날짜별 제출 건수'}
+    }[kind] || {inner:'dateChartInner', scroll:'dateChartScroll', canvas:'chartDate', empty:'날짜별 제출 기록 없음', aria:'날짜별 제출 건수'};
+
+    var inner = document.getElementById(cfg.inner);
+    var scroller = document.getElementById(cfg.scroll);
+    if(!inner) return null;
+
+    if(!sorted || !sorted.length){
+      inner.style.width = '100%';
+      inner.style.minWidth = '100%';
+      inner.innerHTML = '<div class="empty-date-chart">'+cfg.empty+'</div>';
+      if(scroller) scroller.scrollLeft = 0;
+      return null;
+    }
+
+    var slot = 112;
+    var width = Math.max(300, sorted.length * slot);
+    inner.style.width = width + 'px';
+    inner.style.minWidth = width + 'px';
+    inner.innerHTML = '<canvas id="'+cfg.canvas+'" role="img" aria-label="'+cfg.aria+'"></canvas>';
+
+    resetScroll(cfg.scroll);
+    return document.getElementById(cfg.canvas);
+  }
+
+  function makePopCanvas(sorted){
+    var oldCanvas = document.getElementById('chartPop');
+    var card = oldCanvas ? oldCanvas.closest('.card') : null;
+    if(!card) return null;
+
+    var legend = card.querySelector('.legend');
+    if(legend && !legend.querySelector('.pop-scroll-guide')){
+      var span = document.createElement('span');
+      span.className = 'scroll-guide pop-scroll-guide';
+      span.textContent = '많은 종목은 가로 스크롤';
+      legend.appendChild(span);
+    }
+
+    var wrap = card.querySelector('#popChartScroll');
+    if(!wrap){
+      var canvasParent = oldCanvas.parentElement;
+      wrap = document.createElement('div');
+      wrap.id = 'popChartScroll';
+      wrap.className = 'pop-chart-scroll';
+      var inner = document.createElement('div');
+      inner.id = 'popChartInner';
+      inner.className = 'pop-chart-inner';
+      wrap.appendChild(inner);
+      canvasParent.parentNode.replaceChild(wrap, canvasParent);
+    }
+
+    var inner2 = document.getElementById('popChartInner');
+    if(!sorted || !sorted.length){
+      inner2.style.width = '100%';
+      inner2.style.minWidth = '100%';
+      inner2.innerHTML = '<div class="empty-pop-chart">운동 종목 기록 없음</div>';
+      resetScroll('popChartScroll');
+      return null;
+    }
+
+    var width = Math.max(420, sorted.length * 84);
+    inner2.style.width = width + 'px';
+    inner2.style.minWidth = width + 'px';
+    inner2.innerHTML = '<canvas id="chartPop" role="img" aria-label="운동 종목별 인기도"></canvas>';
+    resetScroll('popChartScroll');
+    return document.getElementById('chartPop');
+  }
+
+  function shortName(name){
+    name = String(name || '');
+    return name.length > 10 ? name.slice(0, 9) + '…' : name;
+  }
+
+  function categoryColor(ex){
+    var n = String(ex || '').toLowerCase();
+    if(['rowing machine','running machine','stepper','stepper machine','ankle jump rope','jump rope','indoor cycle'].some(function(k){return n.indexOf(k) >= 0;})) return '#06B6D4';
+    if(['squat','lunge','machine squat','leg extension','bulgarian'].some(function(k){return n.indexOf(k) >= 0;})) return '#FB923C';
+    if(['plank','crunch','sit-up','sit up','leg raise','hanging leg raise'].some(function(k){return n.indexOf(k) >= 0;})) return '#FACC15';
+    return '#A855F7';
+  }
+
+  function renderPopChartV74(list){
+    var counts = {};
+    (list || []).flatMap(function(s){
+      try{
+        return typeof getExerciseRecords === 'function' ? getExerciseRecords(s.records) : (s.records || []);
+      }catch(e){
+        return (s && s.records) || [];
+      }
+    }).forEach(function(r){
+      [].concat(r.cardio || [], r.upper || [], r.lower || [], r.core || []).forEach(function(ex){
+        ex = String(ex || '').trim();
+        if(ex) counts[ex] = (counts[ex] || 0) + 1;
+      });
+    });
+
+    var sorted = Object.entries(counts).sort(function(a,b){
+      var diff = Number(b[1] || 0) - Number(a[1] || 0);
+      return diff || String(a[0]).localeCompare(String(b[0]), 'ko');
+    });
+
+    try{ if(popChart) popChart.destroy(); }catch(e){}
+    try{ popChart = null; }catch(e){}
+
+    var canvas = makePopCanvas(sorted);
+    if(!canvas || typeof Chart === 'undefined') return;
+
+    try{
+      popChart = new Chart(canvas, {
+        type:'bar',
+        data:{
+          labels: sorted.map(function(x){return shortName(x[0]);}),
+          datasets:[{
+            data: sorted.map(function(x){return x[1];}),
+            backgroundColor: sorted.map(function(x){return categoryColor(x[0]);}),
+            borderRadius: 8,
+            barThickness: 30,
+            maxBarThickness: 34
+          }]
+        },
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          plugins:{
+            legend:{display:false},
+            tooltip:{
+              callbacks:{
+                title:function(items){ return sorted[items[0].dataIndex] ? sorted[items[0].dataIndex][0] : ''; },
+                label:function(item){ return '기록 ' + item.raw + '건'; }
+              }
+            }
+          },
+          scales:{
+            x:{
+              ticks:{color:'#cbd5e1',font:{size:10,weight:'700'},autoSkip:false,maxRotation:25,minRotation:25},
+              grid:{display:false}
+            },
+            y:{
+              ticks:{color:'#94a3b8',font:{size:11},precision:0},
+              grid:{color:'rgba(255,255,255,0.08)'},
+              min:0,
+              beginAtZero:true
+            }
+          }
+        }
+      });
+    }catch(e){
+      console.warn('인기도 그래프 렌더링 오류', e);
+    }
+    resetScroll('popChartScroll');
+  }
+
+  try{ setupScrollableDateChart = makeDateCanvas; }catch(e){}
+  try{ renderPopChart = renderPopChartV74; }catch(e){}
+
+  if(typeof renderAll === 'function' && !window.__v74RenderAllWrapped){
+    window.__v74RenderAllWrapped = true;
+    var oldRenderAll = renderAll;
+    renderAll = function(){
+      var result = oldRenderAll.apply(this, arguments);
+      setTimeout(resetAllGraphScroll, 30);
+      setTimeout(resetAllGraphScroll, 220);
+      return result;
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(resetAllGraphScroll, 500);
+    setTimeout(resetAllGraphScroll, 1200);
+  });
+  window.addEventListener('load', function(){
+    setTimeout(resetAllGraphScroll, 700);
+    setTimeout(resetAllGraphScroll, 1600);
+  });
+})();
+</script>
+
+
+<!-- ===== v75 final fix: 그래프 카드 비율 재조정 ===== -->
+<style id="v75-dashboard-chart-ratio-final-fix">
+/* 인기도 카드가 커지고 나머지 그래프가 눌리는 문제 수정 */
+.dashboard-four-charts{
+  display:grid !important;
+  grid-template-columns:repeat(4, minmax(0, 1fr)) !important;
+  gap:14px !important;
+  align-items:stretch !important;
+}
+.dashboard-four-charts > .card,
+.dashboard-four-charts .card,
+.dashboard-four-charts .date-card,
+.dashboard-four-charts .injury-card,
+.dashboard-four-charts .rest-card{
+  min-width:0 !important;
+  width:100% !important;
+  max-width:none !important;
+  overflow:hidden !important;
+  box-sizing:border-box !important;
+}
+
+/* 모든 그래프 박스 높이와 내부 비율 통일 */
+.dashboard-four-charts .date-chart-scroll,
+.dashboard-four-charts .pop-chart-scroll{
+  width:100% !important;
+  max-width:100% !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  box-sizing:border-box !important;
+}
+
+.dashboard-four-charts .date-chart-inner,
+.dashboard-four-charts .pop-chart-inner{
+  height:190px !important;
+  min-width:360px !important;
+  max-width:none !important;
+  box-sizing:border-box !important;
+}
+
+/* 인기도 그래프도 다른 그래프와 같은 카드 비율로 표시 */
+#popChartScroll.pop-chart-scroll{
+  width:100% !important;
+  max-width:100% !important;
+}
+
+#popChartInner.pop-chart-inner{
+  height:190px !important;
+  min-width:360px !important;
+}
+
+/* 긴 문구가 카드 폭을 밀어내지 않도록 보정 */
+.dashboard-four-charts .legend{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  min-width:0 !important;
+}
+.dashboard-four-charts .legend span{
+  min-width:0 !important;
+}
+.dashboard-four-charts .scroll-guide{
+  max-width:100% !important;
+  white-space:normal !important;
+  word-break:keep-all !important;
+  line-height:1.2 !important;
+}
+
+/* 노트북/태블릿 폭에서는 2열로 자연스럽게 */
+@media(max-width:1180px){
+  .dashboard-four-charts{
+    grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* 휴대폰에서는 1열 */
+@media(max-width:720px){
+  .dashboard-four-charts{
+    grid-template-columns:1fr !important;
+  }
+  .dashboard-four-charts .date-chart-inner,
+  .dashboard-four-charts .pop-chart-inner{
+    min-width:340px !important;
+  }
+}
+</style>
+
+<script id="v75-dashboard-chart-ratio-final-script">
+(function(){
+  if(window.__v75DashboardChartRatioFixInstalled) return;
+  window.__v75DashboardChartRatioFixInstalled = true;
+
+  function resetScroll(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    var run = function(){ try{ el.scrollLeft = 0; }catch(e){} };
+    run();
+    requestAnimationFrame(run);
+    setTimeout(run, 100);
+    setTimeout(run, 300);
+  }
+
+  function normalizeChartWidths(){
+    try{
+      var popInner = document.getElementById('popChartInner');
+      if(popInner){
+        var canvas = document.getElementById('chartPop');
+        var labels = 0;
+        try{
+          labels = (window.popChart && window.popChart.data && window.popChart.data.labels) ? window.popChart.data.labels.length : 0;
+        }catch(e){}
+        var width = Math.max(360, labels * 72);
+        popInner.style.width = width + 'px';
+        popInner.style.minWidth = width + 'px';
+      }
+
+      [
+        ['dateChartInner','chartDate'],
+        ['restChartInner','chartRestDate'],
+        ['injuryChartInner','chartInjuryDate']
+      ].forEach(function(pair){
+        var inner = document.getElementById(pair[0]);
+        var chart = window[pair[1]];
+        if(!inner) return;
+        var labels = 0;
+        try{
+          var cv = document.getElementById(pair[1]);
+          if(cv && cv.__chartist) labels = 0;
+        }catch(e){}
+        /* 기존 스크립트가 이미 width를 계산하므로 최소폭만 안정화 */
+        if(parseInt(inner.style.width || '0', 10) < 360){
+          inner.style.width = '360px';
+          inner.style.minWidth = '360px';
+        }
+      });
+
+      ['popChartScroll','dateChartScroll','restChartScroll','injuryChartScroll'].forEach(resetScroll);
+    }catch(e){}
+  }
+
+  if(typeof renderAll === 'function' && !window.__v75RenderAllRatioWrapped){
+    window.__v75RenderAllRatioWrapped = true;
+    var oldRenderAll = renderAll;
+    renderAll = function(){
+      var result = oldRenderAll.apply(this, arguments);
+      setTimeout(normalizeChartWidths, 40);
+      setTimeout(normalizeChartWidths, 250);
+      return result;
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(normalizeChartWidths, 500);
+    setTimeout(normalizeChartWidths, 1200);
+  });
+  window.addEventListener('load', function(){
+    setTimeout(normalizeChartWidths, 700);
+    setTimeout(normalizeChartWidths, 1600);
+  });
+})();
+</script>
+
+</body></html>
